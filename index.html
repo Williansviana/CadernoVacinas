@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caderno de Vacinas — Willians Rosa Viana</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #1D4ED8;
+            --primary-light: #3B82F6;
+            --primary-glow: rgba(37, 99, 235, 0.15);
+            --secondary: #10B981;
+            --accent: #F59E0B;
+            --danger: #EF4444;
+            --bg: #F0F4FF;
+            --card: #FFFFFF;
+            --text: #1E293B;
+            --text-light: #64748B;
+            --border: #E2E8F0;
+            --shadow: 0 4px 24px rgba(37, 99, 235, 0.1);
+            --shadow-lg: 0 12px 40px rgba(37, 99, 235, 0.15);
+            --radius: 18px;
+            --radius-sm: 12px;
+            --radius-xs: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 40%, #3B82F6 70%, #60A5FA 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            padding: 40px 24px 60px;
+            text-align: center;
+        }
+
+        .header-avatar {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2.2rem;
+            border: 3px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .header .subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        .header-wave { position: relative; z-index: 2; margin-top: -1px; }
+        .header-wave svg { display: block; width: 100%; height: 30px; }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 16px 40px;
+            position: relative;
+            z-index: 3;
+            margin-top: -20px;
+        }
+
+        .patient-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .patient-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .patient-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .patient-card-header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .patient-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .form-group input, .form-group select {
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-xs);
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            background: #F8FAFC;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-glow);
+            background: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 20px 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item:hover { transform: translateY(-3px); }
+
+        .stat-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .stat-item:nth-child(1)::after { background: var(--primary); }
+        .stat-item:nth-child(2)::after { background: var(--secondary); }
+        .stat-item:nth-child(3)::after { background: var(--accent); }
+        .stat-item:nth-child(4)::after { background: var(--danger); }
+
+        .stat-icon { font-size: 1.4rem; margin-bottom: 6px; }
+        .stat-value { font-size: 1.8rem; font-weight: 900; line-height: 1; margin-bottom: 4px; }
+
+        .stat-item:nth-child(1) .stat-value { color: var(--primary); }
+        .stat-item:nth-child(2) .stat-value { color: var(--secondary); }
+        .stat-item:nth-child(3) .stat-value { color: var(--accent); }
+        .stat-item:nth-child(4) .stat-value { color: var(--danger); }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .progress-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .progress-top h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-percent {
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .progress-track {
+            height: 14px;
+            background: #E2E8F0;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar.gradient {
+            height: 100%;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #2563EB, #3B82F6, #10B981);
+            background-size: 200% 100%;
+            animation: progressShimmer 3s ease infinite;
+            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes progressShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .progress-milestones {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.65rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .search-wrapper {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            background: var(--card);
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+            font-weight: 500;
+        }
+
+        .search-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-glow), var(--shadow);
+        }
+
+        .search-wrapper .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .search-wrapper .search-clear {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            opacity: 0.4;
+            transition: opacity 0.3s;
+            display: none;
+        }
+
+        .search-wrapper .search-clear.visible { display: block; }
+        .search-wrapper .search-clear:hover { opacity: 0.8; }
+
+        .age-tabs-container { margin-bottom: 18px; }
+
+        .age-tabs {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+        }
+
+        .age-tabs::-webkit-scrollbar { display: none; }
+
+        .age-tab {
+            padding: 8px 14px;
+            border-radius: 50px;
+            border: 2px solid var(--border);
+            background: var(--card);
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-light);
+        }
+
+        .age-tab:hover {
+            border-color: var(--primary-light);
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.04);
+        }
+
+        .age-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .vaccine-section {
+            margin-bottom: 28px;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding-left: 4px;
+        }
+
+        .section-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .section-icon.blue { background: rgba(37, 99, 235, 0.1); }
+        .section-icon.green { background: rgba(16, 185, 129, 0.1); }
+        .section-icon.amber { background: rgba(245, 158, 11, 0.1); }
+        .section-icon.red { background: rgba(239, 68, 68, 0.1); }
+        .section-icon.purple { background: rgba(139, 92, 246, 0.1); }
+        .section-icon.teal { background: rgba(20, 184, 166, 0.1); }
+        .section-icon.pink { background: rgba(236, 72, 153, 0.1); }
+        .section-icon.orange { background: rgba(249, 115, 22, 0.1); }
+
+        .section-info h3 { font-size: 1rem; font-weight: 800; color: var(--text); line-height: 1.2; }
+        .section-info .section-age { font-size: 0.72rem; color: var(--text-light); font-weight: 500; }
+
+        .section-progress {
+            margin-left: auto;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.08);
+            padding: 4px 12px;
+            border-radius: 50px;
+        }
+
+        .vaccine-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .vaccine-card {
+            background: var(--card);
+            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vaccine-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--border);
+            transition: background 0.3s;
+        }
+
+        .vaccine-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateX(4px);
+            border-color: var(--primary-light);
+        }
+
+        .vaccine-card.taken {
+            border-color: #BBF7D0;
+            background: linear-gradient(135deg, #F0FDF4, #FFFFFF);
+        }
+
+        .vaccine-card.taken::before { background: var(--secondary); }
+
+        .vaccine-card.pending {
+            background: linear-gradient(135deg, #FFFBEB, #FFFFFF);
+            border-color: #FDE68A;
+        }
+
+        .vaccine-card.pending::before { background: var(--accent); }
+
+        .vaccine-check {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 3px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .vaccine-card.taken .vaccine-check { background: var(--secondary); border-color: var(--secondary); }
+        .vaccine-card.pending .vaccine-check { border-color: var(--accent); border-style: dashed; opacity: 0.6; }
+
+        .check-icon { color: white; font-size: 15px; font-weight: 900; display: none; }
+        .vaccine-card.taken .check-icon { display: block; }
+
+        .vaccine-main { flex: 1; min-width: 0; }
+        .vaccine-name { font-weight: 700; font-size: 0.88rem; margin-bottom: 2px; color: var(--text); }
+        .vaccine-desc { font-size: 0.73rem; color: var(--text-light); line-height: 1.4; }
+
+        .vaccine-diseases {
+            font-size: 0.65rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-top: 4px;
+            background: rgba(37, 99, 235, 0.06);
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .vaccine-card.taken .vaccine-diseases { color: var(--secondary); background: rgba(16, 185, 129, 0.08); }
+
+        .vaccine-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-light);
+            background: #F1F5F9;
+            padding: 4px 10px;
+            border-radius: 50px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .vaccine-card.taken .vaccine-badge { color: var(--secondary); background: #DCFCE7; }
+        .vaccine-card.pending .vaccine-badge { color: var(--accent); background: #FEF3C7; }
+
+        .expand-btn {
+            background: none; border: none; cursor: pointer;
+            font-size: 0.85rem; color: var(--text-light);
+            transition: transform 0.3s; padding: 6px; flex-shrink: 0;
+        }
+
+        .expand-btn.expanded { transform: rotate(180deg); }
+
+        .info-panel {
+            display: none; margin-top: 12px; padding: 16px;
+            background: rgba(37, 99, 235, 0.03); border-radius: var(--radius-xs);
+            border: 1px dashed var(--border); font-size: 0.78rem;
+        }
+
+        .info-panel.show { display: block; }
+
+        .info-row {
+            display: flex; justify-content: space-between;
+            padding: 5px 0; border-bottom: 1px solid #F1F5F9;
+        }
+
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: var(--text-light); font-weight: 500; }
+        .info-value { font-weight: 700; color: var(--text); }
+
+        .delete-btn {
+            margin-top: 12px; width: 100%; padding: 10px;
+            background: rgba(239, 68, 68, 0.08); color: var(--danger);
+            border: none; border-radius: var(--radius-xs); cursor: pointer;
+            font-weight: 700; font-size: 0.78rem; font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .delete-btn:hover { background: rgba(239, 68, 68, 0.15); }
+
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(6px);
+            z-index: 1000; align-items: center; justify-content: center; padding: 20px;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: var(--card); border-radius: var(--radius); padding: 32px;
+            width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3); animation: modalSlide 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(30px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute; top: 16px; right: 16px;
+            background: #F1F5F9; border: none; width: 32px; height: 32px;
+            border-radius: 50%; font-size: 1rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover { background: #E2E8F0; }
+
+        .modal h3 {
+            font-size: 1.15rem; font-weight: 800; color: var(--primary);
+            margin-bottom: 24px; display: flex; align-items: center; gap: 10px;
+            padding-right: 40px;
+        }
+
+        .modal .form-group { margin-bottom: 16px; }
+
+        .modal .form-group input, .modal .form-group select, .modal .form-group textarea {
+            width: 100%; padding: 12px 16px; border: 2px solid var(--border);
+            border-radius: var(--radius-xs); font-size: 0.9rem; font-family: 'Inter', sans-serif;
+            transition: all 0.3s; background: #F8FAFC; font-weight: 500;
+        }
+
+        .modal .form-group textarea { resize: vertical; min-height: 70px; }
+
+        .modal .form-group input:focus, .modal .form-group select:focus, .modal .form-group textarea:focus {
+            outline: none; border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-glow); background: white;
+        }
+
+        .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
+
+        .btn {
+            padding: 13px 24px; border: none; border-radius: var(--radius-xs);
+            font-size: 0.88rem; font-weight: 700; cursor: pointer;
+            transition: all 0.3s; font-family: 'Inter', sans-serif;
+            display: flex; align-items: center; gap: 8px; justify-content: center;
+        }
+
+        .btn-primary { background: var(--primary); color: white; flex: 1; }
+        .btn-primary:hover {
+            background: var(--primary-dark); transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary { background: #F1F5F9; color: var(--text-light); }
+        .btn-secondary:hover { background: #E2E8F0; }
+
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            padding: 14px 22px; border-radius: var(--radius-sm);
+            font-size: 0.85rem; font-weight: 600; z-index: 3000;
+            transform: translateY(120px); opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex; align-items: center; gap: 10px; max-width: 360px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: var(--secondary); color: white; }
+        .toast.error { background: var(--danger); color: white; }
+        .toast.info { background: var(--primary); color: white; }
+        .toast.warning { background: var(--accent); color: white; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-light); }
+        .empty-state .icon { font-size: 3.5rem; margin-bottom: 16px; }
+        .empty-state h3 { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+        .empty-state p { font-size: 0.88rem; }
+
+        @media print {
+            body { background: white; }
+            .header { background: white !important; padding: 20px; }
+            .header h1, .header .subtitle { color: black !important; -webkit-text-fill-color: black; }
+            .header-wave, .search-wrapper, .age-tabs-container, .expand-btn, .delete-btn, .btn, .modal-overlay { display: none !important; }
+            .container { margin-top: 0; padding: 10px; }
+            .vaccine-card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+            .patient-card, .stat-item, .progress-card { box-shadow: none; border: 1px solid #ccc; }
+            .vaccine-section { page-break-inside: avoid; }
+        }
+
+        @media (max-width: 640px) {
+            .header h1 { font-size: 1.4rem; }
+            .header-avatar { width: 64px; height: 64px; font-size: 1.8rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .stat-item { padding: 14px 10px; }
+            .stat-value { font-size: 1.4rem; }
+            .patient-grid { grid-template-columns: 1fr; }
+            .modal { padding: 24px; margin: 8px; }
+            .vaccine-card { padding: 14px; gap: 10px; }
+            .section-header { gap: 8px; }
+            .section-icon { width: 36px; height: 36px; font-size: 1rem; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-content">
+            <div class="header-avatar">💉</div>
+            <h1>Caderno de Vacinas</h1>
+            <p class="subtitle">Registro completo de vacinação — Willians Rosa Viana</p>
+        </div>
+    </div>
+    <div class="header-wave">
+        <svg viewBox="0 0 1440 30" preserveAspectRatio="none">
+            <path fill="#F0F4FF" d="M0,0 C360,30 1080,30 1440,0 L1440,30 L0,30 Z"></path>
+        </svg>
+    </div>
+
+    <div class="container">
+        <div class="patient-card">
+            <div class="patient-card-header">
+                <span style="font-size:1.3rem;">👤</span>
+                <h2>Dados do Paciente</h2>
+            </div>
+            <div class="patient-grid">
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="patientName" value="Willians Rosa Viana" oninput="savePatientInfo()" readonly style="font-weight:700;color:var(--primary);">
+                </div>
+                <div class="form-group">
+                    <label>Data de Nascimento</label>
+                    <input type="date" id="patientBirth" oninput="savePatientInfo()">
+                </div>
+                <div class="form-group">
+                    <label>CPF</label>
+                    <input type="text" id="patientCPF" placeholder="000.000.000-00" oninput="savePatientInfo()">
+                </div>
+                <div class="form-group">
+                    <label>Cartão SUS</label>
+                    <input type="text" id="patientSUS" placeholder="000 0000 0000 0000" oninput="savePatientInfo()">
+                </div>
+                <div class="form-group">
+                    <label>Sexo</label>
+                    <select id="patientGender" onchange="savePatientInfo()">
+                        <option value="">Selecione</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Grupo Sanguíneo</label>
+                    <select id="patientBlood" onchange="savePatientInfo()">
+                        <option value="">Selecione</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-icon">💊</div>
+                <div class="stat-value" id="statTotal">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value" id="statTaken">0</div>
+                <div class="stat-label">Aplicadas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-value" id="statPending">0</div>
+                <div class="stat-label">Pendentes</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">📅</div>
+                <div class="stat-value" id="statNext">—</div>
+                <div class="stat-label">Próxima</div>
+            </div>
+        </div>
+
+        <div class="progress-card">
+            <div class="progress-top">
+                <h3>📈 Progresso da Vacinação</h3>
+                <span class="progress-percent" id="progressPercent">0%</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-bar gradient" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div class="progress-milestones">
+                <span>0%</span>
+                <span>25%</span>
+                <span>50%</span>
+                <span>75%</span>
+                <span>100%</span>
+            </div>
+        </div>
+
+        <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Buscar por nome da vacina, doença..." oninput="filterVaccines()">
+            <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+        </div>
+
+        <div class="age-tabs-container">
+            <div class="age-tabs" id="ageTabs"></div>
+        </div>
+
+        <div id="vaccineList"></div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <h3>💉 Registrar Vacinação</h3>
+            <div class="form-group">
+                <label>Vacina</label>
+                <input type="text" id="modalVaccineName" readonly style="font-weight:700;color:var(--primary);">
+            </div>
+            <div class="form-group">
+                <label>Data de Aplicação *</label>
+                <input type="date" id="modalDate" required>
+            </div>
+            <div class="form-group">
+                <label>Local / Unidade de Saúde</label>
+                <input type="text" id="modalLab" placeholder="Ex: UBS Central, Hospital Municipal...">
+            </div>
+            <div class="form-group">
+                <label>Nº do Lote</label>
+                <input type="text" id="modalBatch" placeholder="Ex: 23VF012Z">
+            </div>
+            <div class="form-group">
+                <label>Fabricante</label>
+                <input type="text" id="modalManufacturer" placeholder="Ex: Fiocruz, Butantan...">
+            </div>
+            <div class="form-group">
+                <label>Profissional de Saúde</label>
+                <input type="text" id="modalProfessional" placeholder="Nome do enfermeiro(a) ou médico(a)">
+            </div>
+            <div class="form-group">
+                <label>Observações</label>
+                <textarea id="modalNotes" placeholder="Reações adversas, observações importantes..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveVaccine()">✅ Registrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ==================== VACCINE DATABASE ====================
+        const vaccineDB = [
+            { id:'bcg', name:'BCG', dose:'Dose Única', age:'0', ageLabel:'Ao Nascer', section:'Nascimento', icon:'👶', color:'blue', desc:'Protege contra formas graves da tuberculose', diseases:'Tuberculose' },
+            { id:'hepb0', name:'Hepatite B', dose:'1ª Dose', age:'0', ageLabel:'Ao Nascer', section:'Nascimento', icon:'👶', color:'blue', desc:'Ideal nas primeiras 12 horas de vida', diseases:'Hepatite B' },
+            { id:'penta1', name:'Pentavalente (DTP+Hib+HepB)', dose:'1ª Dose', age:'2m', ageLabel:'2 Meses', section:'2 Meses', icon:'💉', color:'green', desc:'Difteria, Tétano, Coqueluche, Meningite por Hib e Hepatite B', diseases:'Difteria, Tétano, Coqueluche, Meningite, Hepatite B' },
+            { id:'vip1', name:'Pólio Inativada (VIP)', dose:'1ª Dose', age:'2m', ageLabel:'2 Meses', section:'2 Meses', icon:'💉', color:'green', desc:'Vacina inativada injetável contra poliomielite', diseases:'Poliomielite' },
+            { id:'pcv10_1', name:'Pneumocócica 10V', dose:'1ª Dose', age:'2m', ageLabel:'2 Meses', section:'2 Meses', icon:'💉', color:'green', desc:'Protege contra pneumonias, meningites e otites', diseases:'Pneumonia, Meningite, Otite' },
+            { id:'rotavirus1', name:'Rotavírus Humano (VORH)', dose:'1ª Dose', age:'2m', ageLabel:'2 Meses', section:'2 Meses', icon:'💉', color:'green', desc:'Vacina oral contra gastroenterite por rotavírus', diseases:'Gastroenterite por Rotavírus' },
+            { id:'meningoc_c1', name:'Meningocócica C', dose:'1ª Dose', age:'2m', ageLabel:'2 Meses', section:'2 Meses', icon:'💉', color:'green', desc:'Protege contra meningite meningocócica C', diseases:'Meningite Meningocócica C' },
+            { id:'meningoc_c2', name:'Meningocócica C', dose:'2ª Dose', age:'3m', ageLabel:'3 Meses', section:'3 Meses', icon:'💉', color:'amber', desc:'Segunda dose da meningocócica C', diseases:'Meningite Meningocócica C' },
+            { id:'penta2', name:'Pentavalente (DTP+Hib+HepB)', dose:'2ª Dose', age:'4m', ageLabel:'4 Meses', section:'4 Meses', icon:'💉', color:'amber', desc:'Segunda dose da pentavalente', diseases:'Difteria, Tétano, Coqueluche, Meningite, Hepatite B' },
+            { id:'vip2', name:'Pólio Inativada (VIP)', dose:'2ª Dose', age:'4m', ageLabel:'4 Meses', section:'4 Meses', icon:'💉', color:'amber', desc:'Segunda dose da VIP', diseases:'Poliomielite' },
+            { id:'pcv10_2', name:'Pneumocócica 10V', dose:'2ª Dose', age:'4m', ageLabel:'4 Meses', section:'4 Meses', icon:'💉', color:'amber', desc:'Segunda dose da pneumocócica 10V', diseases:'Pneumonia, Meningite, Otite' },
+            { id:'rotavirus2', name:'Rotavírus Humano (VORH)', dose:'2ª Dose', age:'4m', ageLabel:'4 Meses', section:'4 Meses', icon:'💉', color:'amber', desc:'Segunda dose contra rotavírus', diseases:'Gastroenterite por Rotavírus' },
+            { id:'meningoc_c3', name:'Meningocócica C', dose:'3ª Dose', age:'5m', ageLabel:'5 Meses', section:'5 Meses', icon:'💉', color:'amber', desc:'Terceira dose (conforme fabricante)', diseases:'Meningite Meningocócica C' },
+            { id:'penta3', name:'Pentavalente (DTP+Hib+HepB)', dose:'3ª Dose', age:'6m', ageLabel:'6 Meses', section:'6 Meses', icon:'💉', color:'red', desc:'Terceira dose da pentavalente', diseases:'Difteria, Tétano, Coqueluche, Meningite, Hepatite B' },
+            { id:'vip3', name:'Pólio Inativada (VIP)', dose:'3ª Dose', age:'6m', ageLabel:'6 Meses', section:'6 Meses', icon:'💉', color:'red', desc:'Terceira dose da VIP', diseases:'Poliomielite' },
+            { id:'pcv10_3', name:'Pneumocócica 10V', dose:'3ª Dose', age:'6m', ageLabel:'6 Meses', section:'6 Meses', icon:'💉', color:'red', desc:'Terceira dose da pneumocócica 10V', diseases:'Pneumonia, Meningite, Otite' },
+            { id:'febamarela1', name:'Febre Amarela', dose:'Dose Inicial', age:'9m', ageLabel:'9 Meses', section:'9 Meses', icon:'🦟', color:'amber', desc:'Dose inicial (áreas de risco)', diseases:'Febre Amarela' },
+            { id:'scr1', name:'Tríplice Viral (SCR)', dose:'1ª Dose', age:'12m', ageLabel:'12 Meses', section:'12 Meses', icon:'💉', color:'purple', desc:'Sarampo, Caxumba e Rubéola', diseases:'Sarampo, Caxumba, Rubéola' },
+            { id:'pcv10_ref', name:'Pneumocócica 10V', dose:'Reforço', age:'12m', ageLabel:'12 Meses', section:'12 Meses', icon:'💉', color:'purple', desc:'Reforço da pneumocócica 10V', diseases:'Pneumonia, Meningite, Otite' },
+            { id:'meningoc_c_ref', name:'Meningocócica C', dose:'Reforço', age:'12m', ageLabel:'12 Meses', section:'12 Meses', icon:'💉', color:'purple', desc:'Reforço da meningocócica C', diseases:'Meningite Meningocócica C' },
+            { id:'scrv1', name:'Tetra Viral (SCRV)', dose:'1ª Dose', age:'15m', ageLabel:'15 Meses', section:'15 Meses', icon:'💉', color:'teal', desc:'Sarampo, Caxumba, Rubéola e Varicela', diseases:'Sarampo, Caxumba, Rubéola, Catapora' },
+            { id:'dtp_ref1', name:'DTP (Tríplice Bacteriana)', dose:'1º Reforço', age:'15m', ageLabel:'15 Meses', section:'15 Meses', icon:'💉', color:'teal', desc:'Reforço contra Difteria, Tétano e Coqueluche', diseases:'Difteria, Tétano, Coqueluche' },
+            { id:'hepa1', name:'Hepatite A', dose:'Dose Única', age:'15m', ageLabel:'15 Meses', section:'15 Meses', icon:'💉', color:'teal', desc:'Vacina contra Hepatite A', diseases:'Hepatite A' },
+            { id:'vop_ref1', name:'Pólio Oral (VOP)', dose:'Reforço', age:'15m', ageLabel:'15 Meses', section:'15 Meses', icon:'💉', color:'teal', desc:'Reforço oral contra poliomielite', diseases:'Poliomielite' },
+            { id:'dtp_ref2', name:'DTP (Tríplice Bacteriana)', dose:'2º Reforço', age:'4y', ageLabel:'4 Anos', section:'4 Anos', icon:'🧒', color:'red', desc:'Segundo reforço contra Difteria, Tétano e Coqueluche', diseases:'Difteria, Tétano, Coqueluche' },
+            { id:'vop_ref2', name:'Pólio Oral (VOP)', dose:'2º Reforço', age:'4y', ageLabel:'4 Anos', section:'4 Anos', icon:'🧒', color:'red', desc:'Segundo reforço oral contra poliomielite', diseases:'Poliomielite' },
+            { id:'scr2', name:'Tríplice Viral (SCR)', dose:'2ª Dose', age:'4y', ageLabel:'4 Anos', section:'4 Anos', icon:'🧒', color:'red', desc:'Segunda dose da tríplice viral', diseases:'Sarampo, Caxumba, Rubéola' },
+            { id:'hpv_m1', name:'HPV4 (Meninos)', dose:'1ª Dose', age:'9y', ageLabel:'9-10 Anos', section:'9-10 Anos (Meninos)', icon:'👦', color:'purple', desc:'Papilomavírus humano - 1ª dose', diseases:'HPV' },
+            { id:'hpv_m2', name:'HPV4 (Meninos)', dose:'2ª Dose', age:'9y', ageLabel:'9-10 Anos', section:'9-10 Anos (Meninos)', icon:'👦', color:'purple', desc:'HPV - 2ª dose (6 meses após)', diseases:'HPV' },
+            { id:'meningoc_acwy1', name:'Meningocócica ACWY', dose:'Dose', age:'11y', ageLabel:'11-12 Anos', section:'11-12 Anos', icon:'🧑', color:'teal', desc:'Vacina meningocócica ACWY', diseases:'Meningite ACWY' },
+            { id:'meningoc_acwy_ref', name:'Meningocócica ACWY', dose:'Reforço', age:'11y', ageLabel:'11-12 Anos', section:'11-12 Anos', icon:'🧑', color:'teal', desc:'Reforço a cada 5 anos', diseases:'Meningite ACWY' },
+            { id:'dt_adulto1', name:'dT (Dupla Adulto)', dose:'1ª Dose', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'👨', color:'blue', desc:'Difteria e Tétano - 1ª dose', diseases:'Difteria, Tétano' },
+            { id:'dt_adulto2', name:'dT (Dupla Adulto)', dose:'2ª Dose', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'👨', color:'blue', desc:'Difteria e Tétano - 2ª dose (30-60 dias)', diseases:'Difteria, Tétano' },
+            { id:'dt_adulto3', name:'dT (Dupla Adulto)', dose:'3ª Dose', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'👨', color:'blue', desc:'Difteria e Tétano - 3ª dose (6 meses)', diseases:'Difteria, Tétano' },
+            { id:'dt_adulto_ref', name:'dT (Dupla Adulto)', dose:'Reforço', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'👨', color:'blue', desc:'Reforço a cada 10 anos', diseases:'Difteria, Tétano' },
+            { id:'dtpa_adulto', name:'dTpa', dose:'Dose', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'👨', color:'blue', desc:'Substitui uma dose de dT', diseases:'Difteria, Tétano, Coqueluche' },
+            { id:'febamarela_ad', name:'Febre Amarela (Adulto)', dose:'Dose Única', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'🦟', color:'blue', desc:'Para adultos não vacinados', diseases:'Febre Amarela' },
+            { id:'gripe_ad', name:'Influenza (Gripe)', dose:'Anual', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'🤧', color:'blue', desc:'Vacina anual contra gripe', diseases:'Influenza' },
+            { id:'hepb_ad', name:'Hepatite B (Adulto)', dose:'Esquema', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'👨', color:'blue', desc:'Esquema completo (3 doses)', diseases:'Hepatite B' },
+            { id:'gripe_id', name:'Influenza (Gripe)', dose:'Anual', age:'elderly', ageLabel:'Idoso (60+)', section:'Idoso (60+)', icon:'👴', color:'orange', desc:'Vacina anual para idosos', diseases:'Influenza' },
+            { id:'pneumo23_id', name:'Pneumocócica 23V', dose:'Dose', age:'elderly', ageLabel:'Idoso (60+)', section:'Idoso (60+)', icon:'👴', color:'orange', desc:'Vacina pneumocócica 23-valente', diseases:'Pneumonia, Meningite' },
+            { id:'herpes_z', name:'Herpes Zóster', dose:'Dose', age:'elderly', ageLabel:'Idoso (60+)', section:'Idoso (60+)', icon:'👴', color:'orange', desc:'Contra herpes zóster (cobreiro)', diseases:'Herpes Zóster' },
+            { id:'dt_gest', name:'dT', dose:'Esquema', age:'gestante', ageLabel:'Gestante', section:'Gestante', icon:'🤰', color:'pink', desc:'Atualizar durante gestação', diseases:'Difteria, Tétano' },
+            { id:'dtpa_gest', name:'dTpa', dose:'Dose', age:'gestante', ageLabel:'Gestante', section:'Gestante', icon:'🤰', color:'pink', desc:'A partir da 20ª semana', diseases:'Difteria, Tétano, Coqueluche' },
+            { id:'hepb_gest', name:'Hepatite B', dose:'Esquema', age:'gestante', ageLabel:'Gestante', section:'Gestante', icon:'🤰', color:'pink', desc:'Vacina na gestação', diseases:'Hepatite B' },
+            { id:'gripe_gest', name:'Influenza', dose:'Anual', age:'gestante', ageLabel:'Gestante', section:'Gestante', icon:'🤰', color:'pink', desc:'Vacina contra gripe', diseases:'Influenza' },
+        ];
+
+        // ==================== STATE ====================
+        let records = {};
+        let currentFilter = 'all';
+        let currentModalId = null;
+        let searchQuery = '';
+
+        // ==================== UTILS ====================
+        function formatDate(d) {
+            if (!d) return '—';
+            const [y, m, day] = d.split('-');
+            return `${day}/${m}/${y}`;
+        }
+
+        function esc(s) { if (!s) return '—'; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+        function showToast(msg, type = 'info') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = `toast ${type} show`;
+            setTimeout(() => t.classList.remove('show'), 3500);
+        }
+
+        // ==================== INIT ====================
+        function init() {
+            loadPatientInfo();
+            loadRecords();
+            buildAgeTabs();
+            renderVaccines();
+            updateStats();
+            setModalDefaultDate();
+        }
+
+        function setModalDefaultDate() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById('modalDate').value = `${yyyy}-${mm}-${dd}`;
+        }
+
+        // ==================== PATIENT & RECORDS ====================
+        function savePatientInfo() {
+            const info = {
+                name: document.getElementById('patientName').value,
+                birth: document.getElementById('patientBirth').value,
+                cpf: document.getElementById('patientCPF').value,
+                sus: document.getElementById('patientSUS').value,
+                gender: document.getElementById('patientGender').value,
+                blood: document.getElementById('patientBlood').value
+            };
+            localStorage.setItem('wr_vaccine_patient', JSON.stringify(info));
+        }
+
+        function loadPatientInfo() {
+            const raw = localStorage.getItem('wr_vaccine_patient');
+            if (raw) {
+                const info = JSON.parse(raw);
+                document.getElementById('patientName').value = info.name || 'Willians Rosa Viana';
+                document.getElementById('patientBirth').value = info.birth || '';
+                document.getElementById('patientCPF').value = info.cpf || '';
+                document.getElementById('patientSUS').value = info.sus || '';
+                document.getElementById('patientGender').value = info.gender || '';
+                document.getElementById('patientBlood').value = info.blood || '';
+            }
+        }
+
+        function loadRecords() { records = JSON.parse(localStorage.getItem('wr_vaccine_records') || '{}'); }
+        function saveRecords() { localStorage.setItem('wr_vaccine_records', JSON.stringify(records)); }
+
+        // ==================== AGE TABS ====================
+        function buildAgeTabs() {
+            const container = document.getElementById('ageTabs');
+            container.innerHTML = '';
+            const ages = [
+                { key: 'all', label: 'Todas' }, { key: '0', label: '👶 Nascer' },
+                { key: '2m', label: '💉 2m' }, { key: '3m', label: '3m' }, { key: '4m', label: '4m' },
+                { key: '5m', label: '5m' }, { key: '6m', label: '6m' }, { key: '9m', label: '9m' },
+                { key: '12m', label: '12m' }, { key: '15m', label: '15m' }, { key: '4y', label: '🧒 4a' },
+                { key: '9y', label: '👦 9-10a' }, { key: '11y', label: '🧑 11-12a' },
+                { key: 'adult', label: '👨 Adulto' }, { key: 'elderly', label: '👴 60+' }, { key: 'gestante', label: '🤰 Gestante' }
+            ];
+            ages.forEach(a => {
+                const btn = document.createElement('button');
+                btn.className = `age-tab${a.key === 'all' ? ' active' : ''}`;
+                btn.dataset.age = a.key;
+                btn.innerHTML = a.label;
+                btn.onclick = () => filterByAge(a.key, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function filterByAge(age, btn) {
+            currentFilter = age;
+            document.querySelectorAll('.age-tab').forEach(t => t.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            else document.querySelector(`.age-tab[data-age="${age}"]`)?.classList.add('active');
+            renderVaccines();
+        }
+
+        function filterVaccines() {
+            searchQuery = document.getElementById('searchInput').value;
+            document.getElementById('searchClear').classList.toggle('visible', searchQuery.length > 0);
+            renderVaccines();
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchClear').classList.remove('visible');
+            searchQuery = '';
+            renderVaccines();
+        }
+
+        // ==================== RENDER ====================
+        function renderVaccines() {
+            const list = document.getElementById('vaccineList');
+            list.innerHTML = '';
+            let filtered = vaccineDB;
+
+            if (currentFilter !== 'all') filtered = filtered.filter(v => v.age === currentFilter);
+            if (searchQuery.trim()) {
+                const q = searchQuery.toLowerCase();
+                filtered = filtered.filter(v =>
+                    v.name.toLowerCase().includes(q) || v.desc.toLowerCase().includes(q) ||
+                    v.diseases.toLowerCase().includes(q) || v.dose.toLowerCase().includes(q) ||
+                    v.ageLabel.toLowerCase().includes(q)
+                );
+            }
+
+            if (filtered.length === 0) {
+                list.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h3>Nenhuma vacina encontrada</h3><p>Tente ajustar os filtros ou a busca.</p></div>`;
+                return;
+            }
+
+            const groups = {};
+            filtered.forEach(v => {
+                if (!groups[v.section]) groups[v.section] = { vaccines: [], icon: v.icon, color: v.color, ageLabel: v.ageLabel };
+                groups[v.section].vaccines.push(v);
+            });
+
+            Object.entries(groups).forEach(([section, data]) => {
+                const sectionEl = document.createElement('div');
+                sectionEl.className = 'vaccine-section';
+                const total = data.vaccines.length;
+                const taken = data.vaccines.filter(v => records[v.id]).length;
+
+                sectionEl.innerHTML = `
+                    <div class="section-header">
+                        <div class="section-icon ${data.color}">${data.icon}</div>
+                        <div class="section-info"><h3>${section}</h3><span class="section-age">${data.ageLabel}</span></div>
+                        <span class="section-progress">${taken}/${total}</span>
+                    </div>
+                    <div class="vaccine-list"></div>`;
+
+                const vList = sectionEl.querySelector('.vaccine-list');
+                data.vaccines.forEach(v => vList.appendChild(createCard(v)));
+                list.appendChild(sectionEl);
+            });
+        }
+
+        function createCard(v) {
+            const rec = records[v.id];
+            const isTaken = !!rec;
+            const card = document.createElement('div');
+            card.className = `vaccine-card ${isTaken ? 'taken' : 'pending'}`;
+            card.onclick = () => openModal(v.id);
+
+            card.innerHTML = `
+                <div class="vaccine-check"><span class="check-icon">✓</span></div>
+                <div class="vaccine-main">
+                    <div class="vaccine-name">${v.name}</div>
+                    <div class="vaccine-desc">${v.desc}</div>
+                    <div class="vaccine-diseases">🛡️ ${v.diseases}</div>
+                    ${isTaken ? `<div style="margin-top:6px;font-size:0.7rem;color:var(--secondary);font-weight:600;">✅ Aplicada em ${formatDate(rec.date)}</div>` : ''}
+                </div>
+                <span class="vaccine-badge">${v.dose}</span>`;
+
+            if (isTaken) {
+                const expandBtn = document.createElement('button');
+                expandBtn.className = 'expand-btn';
+                expandBtn.innerHTML = '▼';
+                expandBtn.onclick = (e) => { e.stopPropagation(); toggleExpand(v.id, expandBtn); };
+                card.appendChild(expandBtn);
+
+                const panel = document.createElement('div');
+                panel.className = 'info-panel';
+                panel.id = `panel-${v.id}`;
+                panel.innerHTML = `
+                    <div class="info-row"><span class="info-label">Data:</span><span class="info-value">${formatDate(rec.date)}</span></div>
+                    <div class="info-row"><span class="info-label">Local:</span><span class="info-value">${esc(rec.lab)}</span></div>
+                    <div class="info-row"><span class="info-label">Lote:</span><span class="info-value">${esc(rec.batch)}</span></div>
+                    <div class="info-row"><span class="info-label">Fabricante:</span><span class="info-value">${esc(rec.manufacturer)}</span></div>
+                    <div class="info-row"><span class="info-label">Profissional:</span><span class="info-value">${esc(rec.professional)}</span></div>
+                    <div class="info-row"><span class="info-label">Observações:</span><span class="info-value">${esc(rec.notes)}</span></div>
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteRecord('${v.id}')">🗑️ Remover este registro</button>`;
+                card.appendChild(panel);
+            }
+            return card;
+        }
+
+        function toggleExpand(id, btn) {
+            const panel = document.getElementById(`panel-${id}`);
+            if (panel) { panel.classList.toggle('show'); btn.classList.toggle('expanded'); }
+        }
+
+        // ==================== MODAL ====================
+        function openModal(id) {
+            currentModalId = id;
+            const v = vaccineDB.find(x => x.id === id);
+            if (!v) return;
+
+            document.getElementById('modalVaccineName').value = `${v.name} — ${v.dose} (${v.ageLabel})`;
+            setModalDefaultDate();
+            ['modalLab','modalBatch','modalManufacturer','modalProfessional','modalNotes'].forEach(i => document.getElementById(i).value = '');
+
+            if (records[id]) {
+                const r = records[id];
+                document.getElementById('modalDate').value = r.date || '';
+                document.getElementById('modalLab').value = r.lab || '';
+                document.getElementById('modalBatch').value = r.batch || '';
+                document.getElementById('modalManufacturer').value = r.manufacturer || '';
+                document.getElementById('modalProfessional').value = r.professional || '';
+                document.getElementById('modalNotes').value = r.notes || '';
+            }
+
+            document.getElementById('modalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(e) {
+            if (e && e.target !== e.currentTarget) return;
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+            currentModalId = null;
+        }
+
+        function saveVaccine() {
+            if (!currentModalId) return;
+            const date = document.getElementById('modalDate').value;
+            if (!date) { showToast('Informe a data de aplicação!', 'error'); return; }
+
+            records[currentModalId] = {
+                date,
+                lab: document.getElementById('modalLab').value.trim(),
+                batch: document.getElementById('modalBatch').value.trim(),
+                manufacturer: document.getElementById('modalManufacturer').value.trim(),
+                professional: document.getElementById('modalProfessional').value.trim(),
+                notes: document.getElementById('modalNotes').value.trim(),
+                recordedAt: new Date().toISOString()
+            };
+
+            saveRecords();
+            renderVaccines();
+            updateStats();
+            closeModal();
+            const v = vaccineDB.find(x => x.id === currentModalId);
+            showToast(`✅ ${v.name} registrada com sucesso!`, 'success');
+        }
+
+        function deleteRecord(id) {
+            if (!confirm('Tem certeza que deseja remover este registro?')) return;
+            delete records[id];
+            saveRecords();
+            renderVaccines();
+            updateStats();
+            showToast('Registro removido.', 'warning');
+        }
+
+        // ==================== STATS ====================
+        function updateStats() {
+            const total = vaccineDB.length;
+            const taken = Object.keys(records).length;
+            const pending = total - taken;
+            const percent = total ? Math.round((taken / total) * 100) : 0;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statTaken').textContent = taken;
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('progressPercent').textContent = percent + '%';
+            document.getElementById('progressFill').style.width = percent + '%';
+            
+            // Mostra "—" na próxima vacina, sem lógica de datas/atraso
+            document.getElementById('statNext').textContent = pending > 0 ? '—' : '✅';
+            document.getElementById('statNext').style.color = pending > 0 ? '' : 'var(--secondary)';
+        }
+
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+        init();
+    </script>
+</body>
+</html>
