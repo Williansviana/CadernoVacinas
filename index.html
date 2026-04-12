@@ -3,435 +3,241 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carteira de Vacinas - Firebase</title>
+  <title>Carteira de Vacinas - Gabriel</title>
   <style>
     :root {
-      --bg: #f5f7fa; --card: #ffffff; --text: #1f2937; --muted: #6b7280;
-      --border: #e5e7eb; --taken: #dcfce7; --taken-border: #22c55e; --taken-text: #166534;
-      --btn-now: #22c55e; --btn-now-hover: #16a34a; --btn-unmark: #ef4444; --btn-unmark-hover: #dc2626;
-      --shadow: 0 2px 8px rgba(0,0,0,0.08); --radius: 12px; --primary: #3b82f6;
+      --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --muted: #64748b;
+      --border: #e2e8f0; --taken: #f0fdf4; --taken-border: #22c55e;
+      --primary: #3b82f6; --shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; padding: 20px; padding-bottom: 80px; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 20px; padding-bottom: 100px; }
     
-    /* Auth Styles */
-    #auth-container { max-width: 400px; margin: 80px auto; background: var(--card); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; }
-    #auth-container h2 { margin-bottom: 16px; }
-    #auth-container input { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; }
-    #auth-container button { width: 100%; padding: 10px; border: none; border-radius: 8px; background: var(--primary); color: white; font-weight: 600; cursor: pointer; margin-bottom: 8px; }
-    #auth-container button:hover { opacity: 0.9; }
-    #auth-container .toggle { color: var(--primary); cursor: pointer; font-size: 0.9rem; margin-top: 8px; }
-    #auth-container .error { color: #dc2626; font-size: 0.85rem; margin-bottom: 8px; display: none; }
+    /* Auth */
+    #auth-container { max-width: 400px; margin: 50px auto; padding: 30px; background: white; border-radius: 16px; box-shadow: var(--shadow); }
+    .auth-tabs { display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .auth-tab { padding: 10px; cursor: pointer; color: var(--muted); font-weight: 600; }
+    .auth-tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+    input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
+    .btn-main { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; }
 
-    /* App Styles */
-    #app-container { display: none; }
-    header { max-width: 800px; margin: 0 auto 24px; text-align: center; }
-    header h1 { font-size: 1.8rem; margin-bottom: 8px; }
-    header p { color: var(--muted); }
-    .user-bar { max-width: 800px; margin: 0 auto 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: var(--muted); }
-    .controls { max-width: 800px; margin: 0 auto 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
-    #search { flex: 1; min-width: 200px; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; }
-    .stats { background: var(--card); padding: 8px 14px; border-radius: var(--radius); box-shadow: var(--shadow); font-size: 0.9rem; color: var(--muted); display: flex; gap: 12px; align-items: center; }
-    .progress-bar { max-width: 800px; margin: 0 auto 16px; width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #22c55e); transition: width 0.3s ease; }
-    #vaccine-container { max-width: 800px; margin: 0 auto; }
-    .section-title { font-size: 1.1rem; font-weight: 600; margin: 24px 0 10px; padding-left: 4px; border-left: 4px solid #3b82f6; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; transition: all 0.2s ease; }
-    .card.taken { background: var(--taken); border-color: var(--taken-border); }
-    .card-info h3 { font-size: 1rem; margin-bottom: 2px; }
-    .card-info small { color: var(--muted); display: block; margin-top: 2px; }
-    .card-status { font-size: 0.8rem; margin-top: 4px; color: var(--taken-text); font-weight: 500; cursor: pointer; text-decoration: underline dotted; }
-    .btn-toggle { padding: 10px 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: background 0.2s, transform 0.1s; white-space: nowrap; min-width: 140px; }
-    .btn-toggle:hover { transform: scale(1.03); }
-    .btn-toggle.pending { background: var(--btn-now); color: white; }
-    .btn-toggle.pending:hover { background: var(--btn-now-hover); }
-    .btn-toggle.taken { background: var(--btn-unmark); color: white; }
-    .btn-toggle.taken:hover { background: var(--btn-unmark-hover); }
+    /* Layout */
+    #app { max-width: 600px; margin: 0 auto; display: none; }
+    header { text-align: center; margin-bottom: 30px; }
+    .section-title { font-size: 0.75rem; font-weight: 800; color: var(--muted); text-transform: uppercase; margin: 25px 0 10px; letter-spacing: 1px; border-left: 4px solid var(--primary); padding-left: 10px; }
+    
+    /* Cards */
+    .vax-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); transition: 0.3s; }
+    .vax-card.is-taken { background: var(--taken); border-color: var(--taken-border); }
+    .vax-name { font-weight: 700; font-size: 1rem; display: block; }
+    .vax-meta { font-size: 0.8rem; color: var(--muted); }
+    .badge-feito { background: #22c55e; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; }
+    .tag-particular { background: #fef3c7; color: #92400e; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-left: 5px; }
 
-    /* FAB & Modal */
-    .fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; background: #3b82f6; color: white; font-size: 28px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(59,130,246,0.4); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
-    .fab:hover { transform: scale(1.1); }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 100; }
+    .actions { display: flex; gap: 8px; margin-top: 12px; }
+    .btn-vax { flex: 1; padding: 10px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+    .btn-now { background: #22c55e; color: white; }
+    .btn-del { background: #fee2e2; color: #dc2626; flex: 0 0 100px; }
+
+    .floating-add { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; border: none; cursor: pointer; box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3); }
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
     .modal.active { display: flex; }
-    .modal-content { background: var(--card); padding: 20px; border-radius: var(--radius); width: 90%; max-width: 400px; box-shadow: var(--shadow); }
-    .modal-content h3 { margin-bottom: 16px; }
-    .modal-content input, .modal-content select { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; }
-    .modal-content label { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 0.95rem; }
-    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-    .modal-actions button { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; }
-    .btn-cancel { background: #e5e7eb; color: #374151; }
-    .btn-save { background: #22c55e; color: white; }
+    .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 400px; }
 
-    /* Toast & Loading */
-    #toast-container { position: fixed; top: 20px; right: 20px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
-    .toast { background: #1f2937; color: white; padding: 12px 16px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); animation: slideIn 0.3s ease; }
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); display: none; align-items: center; justify-content: center; z-index: 150; font-size: 1.2rem; color: var(--primary); }
-    
-    @media (max-width: 600px) { .card { flex-direction: column; align-items: flex-start; gap: 10px; } .btn-toggle { width: 100%; text-align: center; } }
+    #toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #334155; color: white; padding: 10px 20px; border-radius: 50px; display: none; z-index: 1000; }
   </style>
 </head>
 <body>
 
-  <!-- 🔐 AUTH UI -->
+  <div id="toast"></div>
+
   <div id="auth-container">
-    <h2 id="auth-title">Entrar na Carteira Willians</h2>
-    <div class="error" id="auth-error"></div>
-    <input type="email" id="auth-email" placeholder="Seu e-mail">
-    <input type="password" id="auth-pass" placeholder="Sua senha">
-    <button id="auth-submit">Entrar</button>
-    <div class="toggle" id="auth-toggle">Não tem conta? Cadastre-se</div>
+    <h2 style="text-align:center; margin-bottom:20px;">💉 Carteira Gabriel</h2>
+    <div class="auth-tabs">
+      <div id="tab-login" class="auth-tab active">Entrar</div>
+      <div id="tab-signup" class="auth-tab">Cadastrar</div>
+    </div>
+    <input type="email" id="email" placeholder="E-mail">
+    <input type="password" id="password" placeholder="Senha">
+    <button id="btn-auth" class="btn-main">Entrar</button>
   </div>
 
-  <!-- 📱 APP UI -->
-  <div id="app-container">
+  <div id="app">
     <header>
-      <h1>💉 Carteira de Vacinas de Willians</h1>
-      <p>Dados salvos na nuvem • Sincronizado</p>
+      <h1>Vacinas do Gabriel</h1>
+      <p id="user-display" style="font-size: 0.8rem; color: var(--muted); margin-bottom: 5px;"></p>
+      <button onclick="signOutApp()" style="background:none; border:none; color:red; cursor:pointer; font-size:0.75rem; text-decoration: underline;">Sair da conta</button>
     </header>
-    <div class="user-bar">
-      <span id="user-email">carregando...</span>
-      <button id="btn-logout" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">Sair</button>
-    </div>
 
-    <div class="controls">
-      <input type="text" id="search" placeholder="Buscar por nome, doença ou seção...">
-      <div class="stats"><span>📊 <strong id="progress-text">0/0</strong></span><span id="progress-pct">0%</span></div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-    <div id="vaccine-container"></div>
-
-    <button class="fab" id="open-add-modal" title="Adicionar vacina personalizada">+</button>
+    <div id="vax-list"></div>
+    <button class="floating-add" id="btn-open-modal">+</button>
   </div>
 
-  <!-- MODAL CUSTOM -->
-  <div class="modal" id="add-modal">
+  <div class="modal" id="modal-manual">
     <div class="modal-content">
-      <h3>➕ Adicionar Vacina Personalizada</h3>
-      <input type="text" id="custom-name" placeholder="Nome da vacina (ex: Meningo B)">
-      <input type="text" id="custom-dose" placeholder="Dose (ex: 1ª, Reforço)">
-      <select id="custom-section">
-        <option value="Personalizada">Personalizada</option>
-        <option value="Adulto">Adulto</option>
-        <option value="Idoso (60+)">Idoso (60+)</option>
-        <option value="Gestante">Gestante</option>
-        <option value="Outro">Outro</option>
+      <h3 style="margin-bottom:15px;">Nova Vacina Tomada</h3>
+      <input type="text" id="man-name" placeholder="Nome da Vacina (ex: Dengue)">
+      <input type="text" id="man-dose" placeholder="Dose (ex: 1ª Dose)">
+      <select id="man-sec">
+        <option value="Manual">Extras / Manuais</option>
+        <option value="Nascimento">Nascimento</option>
+        <option value="Infantil (até 15 meses)">Infantil (até 15 meses)</option>
+        <option value="Reforços (4-6 anos)">Reforços (4-6 anos)</option>
+        <option value="Adolescência (9-14 anos)">Adolescência (9-14 anos)</option>
+        <option value="Jovem Adulto (até 20 anos)">Jovem Adulto (até 20 anos)</option>
       </select>
-      <label><input type="checkbox" id="custom-taken-now" checked> ✅ Marcar como <strong>tomada AGORA</strong></label>
-      <div class="modal-actions">
-        <button class="btn-cancel" id="cancel-custom">Cancelar</button>
-        <button class="btn-save" id="save-custom">Salvar</button>
-      </div>
+      <button class="btn-main" id="btn-save-manual">Salvar e Marcar Tomada</button>
+      <button onclick="document.getElementById('modal-manual').classList.remove('active')" style="width:100%; background:none; border:none; color:var(--muted); margin-top:10px; cursor:pointer;">Cancelar</button>
     </div>
   </div>
-
-  <div id="toast-container"></div>
-  <div id="loading">Sincronizando...</div>
 
   <script type="module">
-    // 🔑 CONFIGURAÇÃO FIREBASE (SUBSTITUA PELOS SEUS DADOS)
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
-    apiKey: "AIzaSyAa2LcYIJCoGJ4AJmdA8VeGY6Ad9MQePAw",
-    authDomain: "carteira-vacina-7ffd1.firebaseapp.com",
-    projectId: "carteira-vacina-7ffd1",
-    storageBucket: "carteira-vacina-7ffd1.firebasestorage.app",
-    messagingSenderId: "96202787745",
-    appId: "1:96202787745:web:67fdabcfc525b0d1ac99e0"
-  };
+      apiKey: "AIzaSyAa2LcYIJCoGJ4AJmdA8VeGY6Ad9MQePAw",
+      authDomain: "carteira-vacina-7ffd1.firebaseapp.com",
+      projectId: "carteira-vacina-7ffd1",
+      storageBucket: "carteira-vacina-7ffd1.firebasestorage.app",
+      messagingSenderId: "96202787745",
+      appId: "1:96202787745:web:67fdabcfc525b0d1ac99e0"
+    };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    const firebaseApp = initializeApp(firebaseConfig);
+    const auth = getAuth(firebaseApp);
+    const db = getFirestore(firebaseApp);
 
-    // 📦 STATE & VACCINE DB
+    let state = { user: null, taken: {}, manual: [] };
+    let isLogin = true;
+
+    // BANCO DE DADOS ATÉ 20 ANOS
     const vaccineDB = [
-      { id:'bcg', name:'BCG', dose:'Dose Única', age:'0', ageLabel:'Ao Nascer', section:'Nascimento', icon:'👶', color:'blue', desc:'Protege contra formas graves da tuberculose', diseases:'Tuberculose' },
-      { id:'hepb0', name:'Hepatite B', dose:'1ª Dose', age:'0', ageLabel:'Ao Nascer', section:'Nascimento', icon:'👶', color:'blue', desc:'Ideal nas primeiras 12 horas de vida', diseases:'Hepatite B' },
-      { id:'bcg_nova', name:'B.C.G.', dose:'Dose Única', age:'0', ageLabel:'Ao Nascer', section:'Nascimento', icon:'👶', color:'blue', desc:'Reforço ou aplicação tardia', diseases:'Tuberculose' },
-      { id:'penta1', name:'Pentavalente', dose:'1ª Dose', age:'2m', ageLabel:'2 Meses', section:'2 Meses', icon:'💉', color:'green', desc:'Difteria, Tétano, Coqueluche, Hib, HepB', diseases:'Difteria, Tétano, Coqueluche, Meningite, Hepatite B' },
-      { id:'vip1', name:'Pólio Inativada (VIP)', dose:'1ª Dose', age:'2m', ageLabel:'2 Meses', section:'2 Meses', icon:'💉', color:'green', desc:'Vacina injetável contra poliomielite', diseases:'Poliomielite' },
-      { id:'pcv10_1', name:'Pneumocócica 10V', dose:'1ª Dose', age:'2m', ageLabel:'2 Meses', section:'2 Meses', icon:'💉', color:'green', desc:'Protege contra pneumonias e meningites', diseases:'Pneumonia, Meningite, Otite' },
-      { id:'rotavirus1', name:'Rotavírus (VORH)', dose:'1ª Dose', age:'2m', ageLabel:'2 Meses', section:'2 Meses', icon:'💉', color:'green', desc:'Vacina oral contra gastroenterite', diseases:'Gastroenterite por Rotavírus' },
-      { id:'meningoc_c1', name:'Meningocócica C', dose:'1ª Dose', age:'2m', ageLabel:'2 Meses', section:'2 Meses', icon:'💉', color:'green', desc:'Protege contra meningite C', diseases:'Meningite Meningocócica C' },
-      { id:'meningoc_c2', name:'Meningocócica C', dose:'2ª Dose', age:'3m', ageLabel:'3 Meses', section:'3 Meses', icon:'💉', color:'amber', desc:'Segunda dose da meningocócica C', diseases:'Meningite Meningocócica C' },
-      { id:'penta2', name:'Pentavalente', dose:'2ª Dose', age:'4m', ageLabel:'4 Meses', section:'4 Meses', icon:'💉', color:'amber', desc:'Segunda dose', diseases:'Difteria, Tétano, Coqueluche, Meningite, Hepatite B' },
-      { id:'vip2', name:'Pólio Inativada (VIP)', dose:'2ª Dose', age:'4m', ageLabel:'4 Meses', section:'4 Meses', icon:'💉', color:'amber', desc:'Segunda dose VIP', diseases:'Poliomielite' },
-      { id:'pcv10_2', name:'Pneumocócica 10V', dose:'2ª Dose', age:'4m', ageLabel:'4 Meses', section:'4 Meses', icon:'💉', color:'amber', desc:'Segunda dose 10V', diseases:'Pneumonia, Meningite, Otite' },
-      { id:'rotavirus2', name:'Rotavírus (VORH)', dose:'2ª Dose', age:'4m', ageLabel:'4 Meses', section:'4 Meses', icon:'💉', color:'amber', desc:'Segunda dose VORH', diseases:'Gastroenterite por Rotavírus' },
-      { id:'polio_2', name:'Contra Poliomielite', dose:'2ª Dose', age:'4m', ageLabel:'4 Meses', section:'4 Meses', icon:'💉', color:'amber', desc:'Complementar', diseases:'Poliomielite' },
-      { id:'meningoc_c3', name:'Meningocócica C', dose:'3ª Dose', age:'5m', ageLabel:'5 Meses', section:'5 Meses', icon:'💉', color:'amber', desc:'Terceira dose', diseases:'Meningite Meningocócica C' },
-      { id:'penta3', name:'Pentavalente', dose:'3ª Dose', age:'6m', ageLabel:'6 Meses', section:'6 Meses', icon:'💉', color:'red', desc:'Terceira dose', diseases:'Difteria, Tétano, Coqueluche, Meningite, Hepatite B' },
-      { id:'vip3', name:'Pólio Inativada (VIP)', dose:'3ª Dose', age:'6m', ageLabel:'6 Meses', section:'6 Meses', icon:'💉', color:'red', desc:'Terceira dose VIP', diseases:'Poliomielite' },
-      { id:'pcv10_3', name:'Pneumocócica 10V', dose:'3ª Dose', age:'6m', ageLabel:'6 Meses', section:'6 Meses', icon:'💉', color:'red', desc:'Terceira dose 10V', diseases:'Pneumonia, Meningite, Otite' },
-      { id:'contrapolio_3', name:'Contrapólio', dose:'3ª Dose', age:'6m', ageLabel:'6 Meses', section:'6 Meses', icon:'💉', color:'red', desc:'Terceira dose', diseases:'Poliomielite' },
-      { id:'dtp3', name:'Tríplice (DPT)', dose:'3ª Dose', age:'6m', ageLabel:'6 Meses', section:'6 Meses', icon:'💉', color:'red', desc:'Terceira dose DPT', diseases:'Difteria, Tétano, Coqueluche' },
-      { id:'febamarela1', name:'Febre Amarela', dose:'Dose Inicial', age:'9m', ageLabel:'9 Meses', section:'9 Meses', icon:'🦟', color:'amber', desc:'Dose inicial', diseases:'Febre Amarela' },
-      { id:'scr1', name:'Tríplice Viral (SCR)', dose:'1ª Dose', age:'12m', ageLabel:'12 Meses', section:'12 Meses', icon:'💉', color:'purple', desc:'Sarampo, Caxumba, Rubéola', diseases:'Sarampo, Caxumba, Rubéola' },
-      { id:'pcv10_ref', name:'Pneumocócica 10V', dose:'Reforço', age:'12m', ageLabel:'12 Meses', section:'12 Meses', icon:'💉', color:'purple', desc:'Reforço 10V', diseases:'Pneumonia, Meningite, Otite' },
-      { id:'meningoc_c_ref', name:'Meningocócica C', dose:'Reforço', age:'12m', ageLabel:'12 Meses', section:'12 Meses', icon:'💉', color:'purple', desc:'Reforço C', diseases:'Meningite Meningocócica C' },
-      { id:'scrv1', name:'Tetra Viral (SCRV)', dose:'1ª Dose', age:'15m', ageLabel:'15 Meses', section:'15 Meses', icon:'💉', color:'teal', desc:'Sarampo, Caxumba, Rubéola, Varicela', diseases:'Sarampo, Caxumba, Rubéola, Catapora' },
-      { id:'dtp_ref1', name:'DTP (Tríplice)', dose:'1º Reforço', age:'15m', ageLabel:'15 Meses', section:'15 Meses', icon:'💉', color:'teal', desc:'Reforço DTP', diseases:'Difteria, Tétano, Coqueluche' },
-      { id:'hepa1', name:'Hepatite A', dose:'Dose Única', age:'15m', ageLabel:'15 Meses', section:'15 Meses', icon:'💉', color:'teal', desc:'Contra Hepatite A', diseases:'Hepatite A' },
-      { id:'vop_ref1', name:'Pólio Oral (VOP)', dose:'Reforço', age:'15m', ageLabel:'15 Meses', section:'15 Meses', icon:'💉', color:'teal', desc:'Reforço VOP', diseases:'Poliomielite' },
-      { id:'dtp_ref2', name:'DTP (Tríplice)', dose:'2º Reforço', age:'4y', ageLabel:'4 Anos', section:'4 Anos', icon:'🧒', color:'red', desc:'Segundo reforço', diseases:'Difteria, Tétano, Coqueluche' },
-      { id:'vop_ref2', name:'Pólio Oral (VOP)', dose:'2º Reforço', age:'4y', ageLabel:'4 Anos', section:'4 Anos', icon:'🧒', color:'red', desc:'Segundo reforço VOP', diseases:'Poliomielite' },
-      { id:'scr2', name:'Tríplice Viral (SCR)', dose:'2ª Dose', age:'4y', ageLabel:'4 Anos', section:'4 Anos', icon:'🧒', color:'red', desc:'Segunda dose SCR', diseases:'Sarampo, Caxumba, Rubéola' },
-      { id:'sarampo_2', name:'Contra Sarampo', dose:'2ª Dose', age:'4y', ageLabel:'4 Anos', section:'4 Anos', icon:'🧒', color:'red', desc:'Complementar sarampo', diseases:'Sarampo' },
-      { id:'hpv_m1', name:'HPV4', dose:'1ª Dose', age:'9y', ageLabel:'9-10 Anos', section:'9-10 Anos', icon:'👦', color:'purple', desc:'Papilomavírus 1ª dose', diseases:'HPV' },
-      { id:'hpv_m2', name:'HPV4', dose:'2ª Dose', age:'9y', ageLabel:'9-10 Anos', section:'9-10 Anos', icon:'👦', color:'purple', desc:'HPV 2ª dose', diseases:'HPV' },
-      { id:'meningoc_acwy1', name:'Meningocócica ACWY', dose:'Dose', age:'11y', ageLabel:'11-12 Anos', section:'11-12 Anos', icon:'🧑', color:'teal', desc:'Meningo ACWY', diseases:'Meningite ACWY' },
-      { id:'meningoc_acwy_ref', name:'Meningocócica ACWY', dose:'Reforço', age:'11y', ageLabel:'11-12 Anos', section:'11-12 Anos', icon:'🧑', color:'teal', desc:'Reforço ACWY', diseases:'Meningite ACWY' },
-      { id:'dt_adulto1', name:'dT (Dupla Adulto)', dose:'1ª Dose', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'👨', color:'blue', desc:'Difteria e Tétano', diseases:'Difteria, Tétano' },
-      { id:'dt_adulto2', name:'dT (Dupla Adulto)', dose:'2ª Dose', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'👨', color:'blue', desc:'30-60 dias após 1ª', diseases:'Difteria, Tétano' },
-      { id:'dt_adulto3', name:'dT (Dupla Adulto)', dose:'3ª Dose', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'👨', color:'blue', desc:'6 meses após 2ª', diseases:'Difteria, Tétano' },
-      { id:'dt_adulto_ref', name:'dT (Dupla Adulto)', dose:'Reforço', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'👨', color:'blue', desc:'A cada 10 anos', diseases:'Difteria, Tétano' },
-      { id:'dtpa_adulto', name:'dTpa', dose:'Dose', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'👨', color:'blue', desc:'Substitui dT', diseases:'Difteria, Tétano, Coqueluche' },
-      { id:'febamarela_ad', name:'Febre Amarela', dose:'Dose Única', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'🦟', color:'blue', desc:'Adultos não vacinados', diseases:'Febre Amarela' },
-      { id:'gripe_ad', name:'Influenza', dose:'Anual', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'🤧', color:'blue', desc:'Vacina anual', diseases:'Influenza' },
-      { id:'hepb_ad', name:'Hepatite B', dose:'Esquema', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'👨', color:'blue', desc:'3 doses', diseases:'Hepatite B' },
-      { id:'caxrub', name:'Caxumba e Rubéola', dose:'Dose', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'💉', color:'blue', desc:'Dupla viral', diseases:'Caxumba, Rubéola' },
-      { id:'tt_unica', name:'Toxóide Tetânico', dose:'Dose Única', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'💉', color:'blue', desc:'Antitetânica', diseases:'Tétano' },
-      { id:'dupla_fa', name:'Dupla F.A.', dose:'Esquema', age:'adult', ageLabel:'Adulto', section:'Adulto', icon:'👨', color:'blue', desc:'Difteria e Tétano', diseases:'Difteria, Tétano' },
-      { id:'covid_4', name:'COVID-19', dose:'4ª Dose', age:'adult', ageLabel:'Adulto/Idoso', section:'Adulto', icon:'💉', color:'teal', desc:'Reforço', diseases:'COVID-19' },
-      { id:'gripe_id', name:'Influenza', dose:'Anual', age:'elderly', ageLabel:'Idoso (60+)', section:'Idoso (60+)', icon:'👴', color:'orange', desc:'Vacina anual 60+', diseases:'Influenza' },
-      { id:'pneumo23_id', name:'Pneumocócica 23V', dose:'Dose', age:'elderly', ageLabel:'Idoso (60+)', section:'Idoso (60+)', icon:'👴', color:'orange', desc:'23-valente', diseases:'Pneumonia, Meningite' },
-      { id:'herpes_z', name:'Herpes Zóster', dose:'Dose', age:'elderly', ageLabel:'Idoso (60+)', section:'Idoso (60+)', icon:'👴', color:'orange', desc:'Cobreiro', diseases:'Herpes Zóster' },
-      { id:'influenza_6', name:'Contra Influenza', dose:'6ª Dose', age:'elderly', ageLabel:'Idoso (60+)', section:'Idoso (60+)', icon:'🤧', color:'orange', desc:'Manutenção', diseases:'Influenza' },
-
-          
+      // Nascimento
+      { id:'bcg', name:'BCG', dose:'Única', sec:'Nascimento', part:false },
+      { id:'hb', name:'Hepatite B', dose:'Nascimento', sec:'Nascimento', part:false },
+      
+      // Infantil
+      { id:'penta1', name:'Pentavalente', dose:'1ª Dose', sec:'Infantil (até 15 meses)', part:false },
+      { id:'vip1', name:'Pólio (VIP)', dose:'1ª Dose', sec:'Infantil (até 15 meses)', part:false },
+      { id:'pcv1', name:'Pneumocócica 10V', dose:'1ª Dose', sec:'Infantil (até 15 meses)', part:false },
+      { id:'menC1', name:'Meningo C', dose:'1ª Dose', sec:'Infantil (até 15 meses)', part:false },
+      { id:'scr1', name:'Tríplice Viral', dose:'1ª Dose', sec:'Infantil (até 15 meses)', part:false },
+      { id:'hepa', name:'Hepatite A', dose:'Dose Única', sec:'Infantil (até 15 meses)', part:false },
+      
+      // Reforços Escolares
+      { id:'dtp_ref', name:'DTP (Tríplice Bacteriana)', dose:'1º Reforço', sec:'Reforços (4-6 anos)', part:false },
+      { id:'vop_ref', name:'Pólio (VOP)', dose:'Reforço', sec:'Reforços (4-6 anos)', part:false },
+      { id:'tetra_ref', name:'Varicela', dose:'2ª Dose', sec:'Reforços (4-6 anos)', part:false },
+      
+      // Adolescência
+      { id:'hpv1', name:'HPV', dose:'1ª Dose', sec:'Adolescência (9-14 anos)', part:false },
+      { id:'hpv2', name:'HPV', dose:'2ª Dose', sec:'Adolescência (9-14 anos)', part:false },
+      { id:'menACWY', name:'Meningocócica ACWY', dose:'Reforço', sec:'Adolescência (9-14 anos)', part:false },
+      
+      // Jovem Adulto (15 a 20 anos)
+      { id:'dt_adulto', name:'Dupla Adulta (DT)', dose:'Reforço (cada 10 anos)', sec:'Jovem Adulto (até 20 anos)', part:false },
+      { id:'hb_adulto', name:'Hepatite B', dose:'Reforço (se necessário)', sec:'Jovem Adulto (até 20 anos)', part:false },
+      { id:'febre_am_ad', name:'Febre Amarela', dose:'Dose Única / Reforço', sec:'Jovem Adulto (até 20 anos)', part:false },
+      { id:'scr_ad', name:'Tríplice Viral', dose:'Dose Atualização', sec:'Jovem Adulto (até 20 anos)', part:false }
     ];
 
-    let state = { taken: {}, custom: [], user: null };
-    let currentUid = null;
+    function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display='block'; setTimeout(()=>t.style.display='none', 3000); }
 
-    // 🖥️ DOM REFS
-    const els = {
-      authCont: document.getElementById('auth-container'),
-      appCont: document.getElementById('app-container'),
-      authTitle: document.getElementById('auth-title'),
-      authSubmit: document.getElementById('auth-submit'),
-      authToggle: document.getElementById('auth-toggle'),
-      authError: document.getElementById('auth-error'),
-      authEmail: document.getElementById('auth-email'),
-      authPass: document.getElementById('auth-pass'),
-      userEmail: document.getElementById('user-email'),
-      btnLogout: document.getElementById('btn-logout'),
-      search: document.getElementById('search'),
-      container: document.getElementById('vaccine-container'),
-      progText: document.getElementById('progress-text'),
-      progPct: document.getElementById('progress-pct'),
-      progFill: document.getElementById('progress-fill'),
-      modal: document.getElementById('add-modal'),
-      openModal: document.getElementById('open-add-modal'),
-      closeModal: document.getElementById('cancel-custom'),
-      saveCustom: document.getElementById('save-custom'),
-      customName: document.getElementById('custom-name'),
-      customDose: document.getElementById('custom-dose'),
-      customSection: document.getElementById('custom-section'),
-      customTaken: document.getElementById('custom-taken-now'),
-      toast: document.getElementById('toast-container'),
-      loading: document.getElementById('loading')
-    };
+    async function sync() {
+      if(state.user) await setDoc(doc(db, "users", state.user.uid), { taken: state.taken, manual: state.manual });
+    }
 
-    // 🔔 TOAST & LOADING
-    const showToast = (msg) => {
-      const t = document.createElement('div');
-      t.className = 'toast'; t.textContent = msg;
-      els.toast.appendChild(t);
-      setTimeout(() => t.remove(), 3000);
-    };
-    const setLoading = (show) => els.loading.style.display = show ? 'flex' : 'none';
-
-    // 📊 FIRESTORE SYNC
-    const syncDB = async (uid) => {
-      setLoading(true);
-      try {
-        const ref = doc(db, 'users', uid, 'vaccines', 'data');
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          state = snap.data();
-        } else {
-          state = { taken: {}, custom: [] };
-          await setDoc(ref, state);
-        }
-        render();
-      } catch (err) {
-        console.error('Sync Error:', err);
-        showToast('⚠️ Erro ao carregar dados');
-      } finally { setLoading(false); }
-    };
-
-    const saveToFirestore = async () => {
-      if (!currentUid) return;
-      try {
-        await updateDoc(doc(db, 'users', currentUid, 'vaccines', 'data'), state);
-      } catch (err) {
-        console.error('Save Error:', err);
-        showToast('💾 Erro ao salvar na nuvem');
-      }
-    };
-
-    // 🔄 RENDER
-    const render = () => {
-      const query = els.search.value.toLowerCase().trim();
-      const allVaccines = [
-        ...vaccineDB,
-        ...state.custom.map(c => ({
-          id: c.id, name: c.name, dose: c.dose || 'Dose Única',
-          age: 'custom', ageLabel: c.dose || 'Dose Única',
-          section: c.section || 'Personalizada', icon: '📝', color: 'gray',
-          desc: 'Adicionada pelo usuário', diseases: 'Personalizada'
-        }))
-      ];
-
-      const filtered = allVaccines.filter(v => 
-        v.name.toLowerCase().includes(query) || 
-        v.diseases.toLowerCase().includes(query) ||
-        v.section.toLowerCase().includes(query)
-      );
-
-      const total = allVaccines.length;
-      const takenCount = Object.keys(state.taken).length;
-      const pct = total ? Math.round((takenCount / total) * 100) : 0;
-      els.progText.textContent = `${takenCount}/${total}`;
-      els.progPct.textContent = `${pct}%`;
-      els.progFill.style.width = `${pct}%`;
-
-      const sectionOrder = ['Nascimento','2 Meses','3 Meses','4 Meses','5 Meses','6 Meses','9 Meses','12 Meses','15 Meses','4 Anos','9-10 Anos','11-12 Anos','Adulto','Idoso (60+)','Gestante','Personalizada','Outro'];
-      const grouped = filtered.reduce((acc, v) => { (acc[v.section] = acc[v.section] || []).push(v); return acc; }, {});
-
-      els.container.innerHTML = '';
-      if (filtered.length === 0) {
-        els.container.innerHTML = '<p style="text-align:center;color:#6b7280;margin-top:24px;">Nenhuma vacina encontrada.</p>';
-        return;
-      }
-
-      for (const sec of sectionOrder) {
-        if (!grouped[sec]) continue;
-        const h = document.createElement('h2');
-        h.className = 'section-title'; h.textContent = sec;
-        els.container.appendChild(h);
-
-        grouped[sec].forEach(v => {
-          const taken = !!state.taken[v.id];
-          const date = state.taken[v.id]?.date;
-          const card = document.createElement('div');
-          card.className = `card ${taken ? 'taken' : ''}`;
-          card.innerHTML = `
-            <div class="card-info">
-              <h3>${v.icon} ${v.name} <span style="color:#6b7280;font-weight:400;">(${v.dose})</span></h3>
-              <small>${v.desc}</small>
-              ${taken ? `<div class="card-status" data-id="${v.id}">✅ Aplicada em ${date}</div>` : ''}
-            </div>
-            <button class="btn-toggle ${taken ? 'taken' : 'pending'}" data-id="${v.id}">
-              ${taken ? '↩️ Desmarcar' : '✅ Tomada Agora'}
-            </button>
-          `;
-          els.container.appendChild(card);
-        });
-      }
-    };
-
-    // 🔐 AUTH LOGIC
-    let isLogin = true;
-    els.authToggle.addEventListener('click', () => {
-      isLogin = !isLogin;
-      els.authTitle.textContent = isLogin ? 'Entrar na Carteira' : 'Criar Conta';
-      els.authSubmit.textContent = isLogin ? 'Entrar' : 'Cadastrar';
-      els.authToggle.textContent = isLogin ? 'Não tem conta? Cadastre-se' : 'Já tem conta? Entrar';
-      els.authError.style.display = 'none';
-    });
-
-    els.authSubmit.addEventListener('click', async () => {
-      const email = els.authEmail.value.trim();
-      const pass = els.authPass.value.trim();
-      if (!email || !pass) return showAuthErr('Preencha e-mail e senha.');
-      try {
-        setLoading(true);
-        const res = isLogin 
-          ? await signInWithEmailAndPassword(auth, email, pass)
-          : await createUserWithEmailAndPassword(auth, email, pass);
-        // onAuthStateChanged handles UI switch
-      } catch (err) {
-        showAuthErr(err.message.includes('auth/') ? err.code.split('/')[1].replace('-', ' ') : 'Erro inesperado.');
-      } finally { setLoading(false); }
-    });
-
-    const showAuthErr = (msg) => {
-      els.authError.textContent = msg; els.authError.style.display = 'block';
-    };
-
-    els.btnLogout.addEventListener('click', () => signOut(auth));
-
-    // 🔄 AUTH STATE OBSERVER
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        currentUid = user.uid;
-        els.userEmail.textContent = user.email;
-        els.authCont.style.display = 'none';
-        els.appCont.style.display = 'block';
-        syncDB(user.uid);
-      } else {
-        currentUid = null;
-        els.authCont.style.display = 'block';
-        els.appCont.style.display = 'none';
-        state = { taken: {}, custom: [] };
-      }
-    });
-
-    // 🎮 APP INTERACTIONS
-    els.search.addEventListener('input', render);
-
-    els.container.addEventListener('click', async (e) => {
-      const btn = e.target.closest('.btn-toggle');
-      const statusEl = e.target.closest('.card-status');
-      if (btn) {
-        const id = btn.dataset.id;
-        if (state.taken[id]) {
-          delete state.taken[id];
-          showToast('↩️ Vacina desmarcada');
-        } else {
-          state.taken[id] = { date: new Date().toISOString().split('T')[0] };
-          showToast('✅ Marcada como tomada AGORA!');
-        }
-        await saveToFirestore();
-        render();
-      } else if (statusEl) {
-        const newDate = prompt('Nova data (AAAA-MM-DD):', statusEl.dataset.date);
-        if (newDate && /^\d{4}-\d{2}-\d{2}$/.test(newDate)) {
-          state.taken[statusEl.dataset.id].date = newDate;
-          await saveToFirestore(); render();
-        }
-      }
-    });
-
-    els.openModal.addEventListener('click', () => els.modal.classList.add('active'));
-    els.closeModal.addEventListener('click', () => els.modal.classList.remove('active'));
-    els.saveCustom.addEventListener('click', async () => {
-      const name = els.customName.value.trim();
-      if (!name) return showToast('⚠️ Informe o nome');
-      const id = `custom_${Date.now()}`;
-      const newVac = { id, name, dose: els.customDose.value.trim() || 'Dose Única', section: els.customSection.value };
-      state.custom.push(newVac);
+    function render() {
+      const list = document.getElementById('vax-list');
+      list.innerHTML = '';
+      const allVax = [...vaccineDB, ...state.manual];
       
-      if (els.customTaken.checked) {
-        state.taken[id] = { date: new Date().toISOString().split('T')[0] };
-        showToast(`✅ ${name} adicionada e tomada AGORA!`);
-      } else {
-        showToast(`➕ ${name} adicionada à lista.`);
+      // Ordem personalizada das seções
+      const sectionOrder = ['Nascimento', 'Infantil (até 15 meses)', 'Reforços (4-6 anos)', 'Adolescência (9-14 anos)', 'Jovem Adulto (até 20 anos)', 'Manual'];
+      const sectionsInUse = [...new Set(allVax.map(v => v.sec))].sort((a, b) => sectionOrder.indexOf(a) - sectionOrder.indexOf(b));
+
+      sectionsInUse.forEach(s => {
+        const div = document.createElement('div');
+        div.innerHTML = `<div class="section-title">${s}</div>`;
+        allVax.filter(v => v.sec === s).forEach(v => {
+          const taken = state.taken[v.id];
+          const card = document.createElement('div');
+          card.className = `vax-card ${taken ? 'is-taken' : ''}`;
+          
+          card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <span class="vax-name">${v.name} ${v.part ? '<span class="tag-particular">Rede Privada</span>' : ''}</span>
+                <span class="vax-meta">${v.dose}</span>
+                ${taken ? `<div style="color: #166534; font-size: 0.75rem; font-weight: bold; margin-top: 4px;">✅ Concluído em ${taken.date}</div>` : ''}
+              </div>
+              ${taken ? `<span class="badge-feito">FEITO</span>` : ''}
+            </div>
+            <div class="actions">
+              ${!taken ? 
+                `<button class="btn-vax btn-now" onclick="toggleVax('${v.id}', true)">Marcar Tomada</button>` : 
+                `<button class="btn-vax btn-del" onclick="toggleVax('${v.id}', false)">🗑️ Remover</button>`
+              }
+            </div>
+          `;
+          div.appendChild(card);
+        });
+        list.appendChild(div);
+      });
+    }
+
+    window.toggleVax = async (id, status) => {
+      if(status) state.taken[id] = { date: new Date().toLocaleDateString('pt-BR') };
+      else { 
+        delete state.taken[id];
+        state.manual = state.manual.filter(m => m.id !== id);
       }
+      await sync(); render();
+    };
 
-      els.customName.value = ''; els.customDose.value = ''; els.customTaken.checked = true;
-      els.modal.classList.remove('active');
-      await saveToFirestore(); render();
+    document.getElementById('btn-save-manual').onclick = async () => {
+      const name = document.getElementById('man-name').value;
+      if(!name) return;
+      const id = 'man_' + Date.now();
+      state.manual.push({ id, name, dose: document.getElementById('man-dose').value || 'Dose Única', sec: document.getElementById('man-sec').value });
+      state.taken[id] = { date: new Date().toLocaleDateString('pt-BR') };
+      await sync(); render();
+      document.getElementById('modal-manual').classList.remove('active');
+      document.getElementById('man-name').value = '';
+      showToast("Vacina manual adicionada!");
+    };
+
+    document.getElementById('tab-login').onclick = () => { isLogin=true; document.getElementById('tab-login').classList.add('active'); document.getElementById('tab-signup').classList.remove('active'); document.getElementById('btn-auth').innerText='Entrar'; };
+    document.getElementById('tab-signup').onclick = () => { isLogin=false; document.getElementById('tab-signup').classList.add('active'); document.getElementById('tab-login').classList.remove('active'); document.getElementById('btn-auth').innerText='Cadastrar'; };
+    
+    document.getElementById('btn-auth').onclick = async () => {
+      const e = document.getElementById('email').value, p = document.getElementById('password').value;
+      if(!e || !p) return alert("Preencha todos os campos");
+      try { isLogin ? await signInWithEmailAndPassword(auth, e, p) : await createUserWithEmailAndPassword(auth, e, p); } catch(err) { alert("Erro: " + err.message); }
+    };
+    
+    window.signOutApp = () => signOut(auth);
+    document.getElementById('btn-open-modal').onclick = () => document.getElementById('modal-manual').classList.add('active');
+
+    onAuthStateChanged(auth, async (user) => {
+      if(user) {
+        state.user = user;
+        document.getElementById('auth-container').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        document.getElementById('user-display').innerText = `Logado como: ${user.email}`;
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if(snap.exists()) {
+          state.taken = snap.data().taken || {};
+          state.manual = snap.data().manual || [];
+        }
+        render();
+      } else {
+        document.getElementById('auth-container').style.display = 'block';
+        document.getElementById('app').style.display = 'none';
+      }
     });
-
-    // Close modal on outside click
-    els.modal.addEventListener('click', (e) => { if (e.target === els.modal) els.modal.classList.remove('active'); });
   </script>
 </body>
 </html>
