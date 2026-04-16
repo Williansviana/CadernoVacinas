@@ -24,11 +24,22 @@
 
     /* Layout */
     #app { max-width: 600px; margin: 0 auto; display: none; }
-    header { text-align: center; margin-bottom: 30px; }
+    header { 
+      text-align: center; 
+      margin-bottom: 30px; 
+      position: sticky; 
+      top: 0; 
+      background: rgba(248, 250, 252, 0.9); 
+      backdrop-filter: blur(8px); 
+      padding: 15px 0; 
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+    }
     .section-title { font-size: 0.75rem; font-weight: 800; color: var(--muted); text-transform: uppercase; margin: 25px 0 10px; letter-spacing: 1px; border-left: 4px solid var(--primary); padding-left: 10px; }
     
     /* Cards */
     .vax-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); transition: 0.3s; }
+    .vax-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
     .vax-card.is-taken { background: var(--taken); border-color: var(--taken-border); }
     .vax-name { font-weight: 700; font-size: 1rem; display: block; }
     .vax-meta { font-size: 0.8rem; color: var(--muted); }
@@ -36,11 +47,12 @@
     .tag-particular { background: #fef3c7; color: #92400e; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-left: 5px; }
 
     .actions { display: flex; gap: 8px; margin-top: 12px; }
-    .btn-vax { flex: 1; padding: 10px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+    .btn-vax { flex: 1; padding: 10px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: 0.2s; }
+    .btn-vax:active { transform: scale(0.95); }
     .btn-now { background: #22c55e; color: white; }
     .btn-del { background: #fee2e2; color: var(--danger); flex: 0 0 100px; }
 
-    .floating-add { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; border: none; cursor: pointer; box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3); }
+    .floating-add { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; border: none; cursor: pointer; box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3); z-index: 50; }
     
     .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; backdrop-filter: blur(4px); }
     .modal.active { display: flex; }
@@ -124,14 +136,15 @@
     let state = { user: null, taken: {}, manual: [] };
     let isLogin = true;
     let pendingDeleteId = null;
-    const MASTER_PASS = "370"; // <--- SENHA DEFINIDA AQUI
+    const MASTER_PASS = "370"; 
 
+    // Database de vacinas atualizado (Pneumocócica 15V)
     const vaccineDB = [
       { id:'bcg', name:'BCG', dose:'Única', sec:'Nascimento', part:false },
       { id:'hb', name:'Hepatite B', dose:'Nascimento', sec:'Nascimento', part:false },
       { id:'penta1', name:'Pentavalente', dose:'1ª Dose', sec:'Infantil (até 15 meses)', part:false },
       { id:'vip1', name:'Pólio (VIP)', dose:'1ª Dose', sec:'Infantil (até 15 meses)', part:false },
-      { id:'pcv1', name:'Pneumocócica 10V', dose:'1ª Dose', sec:'Infantil (até 15 meses)', part:false },
+      { id:'pcv1', name:'Pneumocócica 15V', dose:'1ª Dose', sec:'Infantil (até 15 meses)', part:false },
       { id:'menC1', name:'Meningo C', dose:'1ª Dose', sec:'Infantil (até 15 meses)', part:false },
       { id:'scr1', name:'Tríplice Viral', dose:'1ª Dose', sec:'Infantil (até 15 meses)', part:false },
       { id:'hepa', name:'Hepatite A', dose:'Dose Única', sec:'Infantil (até 15 meses)', part:false },
@@ -216,12 +229,10 @@
 
     document.getElementById('btn-confirm-delete').onclick = async () => {
       const inputPass = document.getElementById('confirm-pass-input').value;
-      
       if(inputPass === MASTER_PASS) {
         delete state.taken[pendingDeleteId];
         state.manual = state.manual.filter(m => m.id !== pendingDeleteId);
-        await sync();
-        render();
+        await sync(); render();
         closeModal('modal-confirm-password');
         showToast("Registro removido.");
       } else {
@@ -240,9 +251,10 @@
       document.getElementById('man-name').value = '';
     };
 
-    document.getElementById('tab-login').onclick = () => { isLogin=true; updateUI(); };
-    document.getElementById('tab-signup').onclick = () => { isLogin=false; updateUI(); };
-    function updateUI() {
+    document.getElementById('tab-login').onclick = () => { isLogin=true; updateAuthUI(); };
+    document.getElementById('tab-signup').onclick = () => { isLogin=false; updateAuthUI(); };
+    
+    function updateAuthUI() {
       document.getElementById('tab-login').classList.toggle('active', isLogin);
       document.getElementById('tab-signup').classList.toggle('active', !isLogin);
       document.getElementById('btn-auth').innerText = isLogin ? 'Entrar' : 'Cadastrar';
@@ -251,8 +263,11 @@
     document.getElementById('btn-auth').onclick = async () => {
       const e = document.getElementById('email').value, p = document.getElementById('password').value;
       if(!e || !p) return showToast("Preencha tudo");
-      try { isLogin ? await signInWithEmailAndPassword(auth, e, p) : await createUserWithEmailAndPassword(auth, e, p); } 
-      catch(err) { showToast("Erro na conta"); }
+      try { 
+        isLogin ? await signInWithEmailAndPassword(auth, e, p) : await createUserWithEmailAndPassword(auth, e, p); 
+      } catch(err) { 
+        showToast("Erro na conta ou senha"); 
+      }
     };
     
     window.signOutApp = () => signOut(auth);
@@ -263,7 +278,7 @@
         state.user = user;
         document.getElementById('auth-container').style.display = 'none';
         document.getElementById('app').style.display = 'block';
-        document.getElementById('user-display').innerText = `Usuário: ${user.email}`;
+        document.getElementById('user-display').innerText = `Logado como: ${user.email}`;
         const snap = await getDoc(doc(db, "users", user.uid));
         if(snap.exists()) {
           state.taken = snap.data().taken || {};
