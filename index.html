@@ -8,12 +8,10 @@
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3004/3004458.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Carteira Gabriel">
+  <meta name="apple-mobile-web-app-title" content="Vax Gabriel">
 
   <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkNhcnRlaXJhIGRvIEdhYnJpZWwiLAogICJzaG9ydF9uYW1lIjogIlZheCBHYWJyaWVsIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmZmZmZmYiLAogICJ0aGVtZV9jb2xvciI6ICIjM2I4MmY2IiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9jZG4taWNvbnMtcG5nLmZsYXRpY29uLmNvbS81MTIvMzAwNC8zMDA0NDU4LnBuZyIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIiwKICAgICAgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIgogICAgfQogIF0KfQ==">
   <meta name="theme-color" content="#3b82f6">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="img/logo_gabriel.png" type="image/png">
 
   <style>
     :root {
@@ -30,7 +28,7 @@
       --border: #e2e8f0;
     }
 
-    /* Reset e Estilo Mobile Nativo */
+    /* Estilos para parecer App Nativo */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     
     body { 
@@ -40,19 +38,18 @@
       padding: 15px; 
       padding-bottom: 100px; 
       line-height: 1.5;
-      user-select: none; /* Evita seleção de texto para parecer App */
-      overscroll-behavior-y: contain; /* Evita o "puxar para atualizar" do navegador */
+      user-select: none;
+      overscroll-behavior-y: contain;
     }
 
     input, select { user-select: text; }
 
-    /* Animação */
     @keyframes popIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Auth */
+    /* Auth Container */
     #auth-container { 
       max-width: 400px; margin: 40px auto; padding: 30px; 
       background: white; border-radius: 20px; 
@@ -60,40 +57,34 @@
     }
     
     .auth-tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid var(--border); }
-    .auth-tab { 
-      padding: 12px; cursor: pointer; color: var(--muted); 
-      font-weight: 700; font-size: 1.1rem; border-radius: 10px 10px 0 0;
-    }
+    .auth-tab { padding: 12px; cursor: pointer; color: var(--muted); font-weight: 700; font-size: 1.1rem; }
     .auth-tab.active { color: var(--primary); background: #eff6ff; border-bottom: 4px solid var(--primary); }
     
     input, select { 
       width: 100%; padding: 14px; margin: 10px 0; 
       border: 2px solid #cbd5e1; border-radius: 12px; font-size: 1rem; outline: none; 
     }
-    input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+    input:focus { border-color: var(--primary); }
     
     .btn-main { 
       width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--tertiary)); 
-      color: white; border: none; border-radius: 15px; font-weight: 800; font-size: 1.2rem; 
-      cursor: pointer; margin-top: 15px; box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3);
+      color: white; border: none; border-radius: 15px; font-weight: 800; font-size: 1.2rem; cursor: pointer;
     }
     .btn-main:active { transform: scale(0.98); }
 
-    /* App Layout */
+    /* Layout App */
     #app { max-width: 600px; margin: 0 auto; display: none; }
-    
     header { 
       text-align: center; margin-bottom: 25px; position: sticky; top: 0; 
       background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); 
       padding: 15px 0; z-index: 10; border-bottom: 3px solid #f1f5f9; 
     }
-    
     h1 { font-weight: 900; font-size: 1.8rem; color: #1e3a8a; }
     
+    /* Cards */
     .section-title { 
       font-size: 0.8rem; font-weight: 800; color: white; text-transform: uppercase; 
-      margin: 25px 0 12px; background: var(--secondary); 
-      padding: 6px 12px; border-radius: 30px; display: inline-block;
+      margin: 25px 0 12px; background: var(--secondary); padding: 6px 12px; border-radius: 30px; display: inline-block;
     }
     
     .history-title { 
@@ -106,34 +97,27 @@
       padding: 18px; margin-bottom: 12px; animation: popIn 0.3s ease-out;
     }
     .vax-card.is-taken { background: var(--taken); border-color: var(--taken-border); }
-    
     .vax-name { font-weight: 800; font-size: 1.1rem; display: block; color: #1e40af; }
     .vax-meta { font-size: 0.85rem; color: var(--muted); font-weight: 600; }
     
-    .badge-feito { 
-      background: #2dd4bf; color: white; padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 900;
-    }
-
     .actions { display: flex; gap: 10px; margin-top: 12px; }
     .btn-vax { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; }
     .btn-now { background: #22c55e; color: white; }
-    .btn-del { background: #fee2e2; color: var(--danger); flex: 0 0 50px; }
+    .btn-del { background: #fee2e2; color: var(--danger); flex: 0 0 55px; }
 
     .floating-add { 
       position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; 
       background: linear-gradient(135deg, var(--secondary), #f59e0b); 
       color: white; border-radius: 50%; display: flex; align-items: center; 
-      justify-content: center; font-size: 30px; border: none; box-shadow: 0 5px 15px rgba(249, 115, 22, 0.4);
+      justify-content: center; font-size: 30px; border: none; box-shadow: 0 5px 15px rgba(249,115,22,0.4);
     }
 
+    /* Modais */
     .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; backdrop-filter: blur(3px); }
     .modal.active { display: flex; }
     .modal-content { background: white; padding: 25px; border-radius: 25px; width: 100%; max-width: 400px; border: 4px solid var(--primary); }
 
-    #toast { 
-      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); 
-      background: #1e293b; color: white; padding: 10px 20px; border-radius: 50px; display: none; z-index: 1000;
-    }
+    #toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 20px; border-radius: 50px; display: none; z-index: 1000; }
   </style>
 </head>
 <body>
@@ -154,8 +138,8 @@
   <div id="app">
     <header>
       <h1>Vacinas do Gabriel</h1>
-      <p id="user-display" style="font-size: 0.8rem; color: var(--muted);"></p>
-      <button onclick="signOutApp()" style="background:none; border:none; color:var(--danger); font-size:0.8rem; text-decoration: underline; margin-top:5px;">Sair</button>
+      <p id="user-display" style="font-size: 0.8rem; color: var(--muted); font-weight: 600;"></p>
+      <button onclick="signOutApp()" style="background:none; border:none; color:var(--danger); font-size:0.8rem; text-decoration: underline; margin-top:5px; cursor: pointer;">Sair</button>
     </header>
     <div id="vax-list"></div>
     <button class="floating-add" id="btn-open-modal">+</button>
@@ -174,7 +158,7 @@
         <option value="Reforços (4-6 anos)">Reforços (4-6 anos)</option>
       </select>
       <button class="btn-main" id="btn-save-manual">Salvar Registro</button>
-      <button onclick="closeModal('modal-manual')" style="width:100%; background:none; border:none; margin-top:15px; font-weight:700; color:var(--muted);">Cancelar</button>
+      <button onclick="closeModal('modal-manual')" style="width:100%; background:none; border:none; margin-top:15px; color:var(--muted); font-weight:700;">Cancelar</button>
     </div>
   </div>
 
@@ -266,7 +250,7 @@
       if(sortedDates.length > 0) {
         sortedDates.forEach(date => {
           const dateDiv = document.createElement('div');
-          dateDiv.innerHTML = `<div class="history-title">📅 ${date}</div>`;
+          dateDiv.innerHTML = `<div class="history-title">📅 Dia ${date}</div>`;
           grouped[date].forEach(v => dateDiv.appendChild(createCard(v, true)));
           list.appendChild(dateDiv);
         });
@@ -286,8 +270,8 @@
 
     window.toggleVax = async (id, status) => {
       if(status) {
-        const userDate = prompt("Data (DD/MM/AAAA):", new Date().toLocaleDateString('pt-BR'));
-        if(userDate) { state.taken[id] = { date: userDate }; await sync(); render(); showToast("Salvo!"); }
+        const userDate = prompt("Data da Vacina (DD/MM/AAAA):", new Date().toLocaleDateString('pt-BR'));
+        if(userDate) { state.taken[id] = { date: userDate }; await sync(); render(); showToast("Salvo com sucesso!"); }
       } else {
         pendingDeleteId = id; document.getElementById('modal-confirm-password').classList.add('active');
       }
@@ -297,17 +281,19 @@
       if(document.getElementById('confirm-pass-input').value === MASTER_PASS) {
         delete state.taken[pendingDeleteId];
         state.manual = state.manual.filter(m => m.id !== pendingDeleteId);
-        await sync(); render(); closeModal('modal-confirm-password'); showToast("Removido.");
-      } else { showToast("Senha Incorreta!"); }
+        await sync(); render(); closeModal('modal-confirm-password'); showToast("Registro removido.");
+        document.getElementById('confirm-pass-input').value = '';
+      } else { showToast("Senha Mestra Incorreta!"); }
     };
 
     document.getElementById('btn-save-manual').onclick = async () => {
       const name = document.getElementById('man-name').value, rawDate = document.getElementById('man-date').value;
-      if(!name || !rawDate) return showToast("Preencha tudo!");
+      if(!name || !rawDate) return showToast("Preencha o nome e a data!");
       const [y, m, d] = rawDate.split('-'), formatted = `${d}/${m}/${y}`, id = 'man_' + Date.now();
-      state.manual.push({ id, name, dose: document.getElementById('man-dose').value || 'Única', sec: document.getElementById('man-sec').value });
+      state.manual.push({ id, name, dose: document.getElementById('man-dose').value || 'Dose Única', sec: document.getElementById('man-sec').value });
       state.taken[id] = { date: formatted };
       await sync(); render(); closeModal('modal-manual');
+      document.getElementById('man-name').value = '';
     };
 
     document.getElementById('tab-login').onclick = () => { isLogin=true; updateAuth(); };
@@ -315,17 +301,21 @@
     function updateAuth() { 
       document.getElementById('tab-login').classList.toggle('active', isLogin);
       document.getElementById('tab-signup').classList.toggle('active', !isLogin);
-      document.getElementById('btn-auth').innerText = isLogin ? 'Iniciar Aventura!' : 'Criar Conta';
+      document.getElementById('btn-auth').innerText = isLogin ? 'Iniciar Aventura!' : 'Criar Nova Conta';
     }
 
     document.getElementById('btn-auth').onclick = async () => {
       const e = document.getElementById('email').value, p = document.getElementById('password').value;
+      if(!e || !p) return showToast("Preencha os campos!");
       try { isLogin ? await signInWithEmailAndPassword(auth, e, p) : await createUserWithEmailAndPassword(auth, e, p); }
-      catch { showToast("Erro na senha!"); }
+      catch { showToast("Erro no Login. Verifique e-mail/senha."); }
     };
     
     window.signOutApp = () => signOut(auth);
-    document.getElementById('btn-open-modal').onclick = () => document.getElementById('modal-manual').classList.add('active');
+    document.getElementById('btn-open-modal').onclick = () => {
+      document.getElementById('man-date').valueAsDate = new Date();
+      document.getElementById('modal-manual').classList.add('active');
+    }
 
     onAuthStateChanged(auth, async (user) => {
       if(user) {
