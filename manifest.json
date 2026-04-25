@@ -1,6 +1,6 @@
 {
   "name": "Carteira do Gabriel",
-  "short_name": "Vax Gabriel",
+  "short_name": "Carteira Gabriel",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
