@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Carteira do Gabriel</title>
 
-  <title>Carteira Gabriel </title>
-
-  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkNhcnRlaXJhIGRvIEdhYnJpZWwiLAogICJzaG9ydF9uYW1lIjogIlZheCBHYWJyaWVsIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmZmZmZmYiLAogICJ0aGVtZV9jb2xvciI6ICIjM2I4MmY2IiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9jZG4taWNvbnMtcG5nLmZsYXRpY29uLmNvbS81MTIvMzAwNC8zMDA0NDU4LnBuZyIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIiwKICAgICAgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIgogICAgfQogIF0KfQ==">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3004/3004458.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Carteira Gabriel">
+
+  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkNhcnRlaXJhIGRvIEdhYnJpZWwiLAogICJzaG9ydF9uYW1lIjogIlZheCBHYWJyaWVsIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmZmZmZmYiLAogICJ0aGVtZV9jb2xvciI6ICIjM2I4MmY2IiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9jZG4taWNvbnMtcG5nLmZsYXRpY29uLmNvbS81MTIvMzAwNC8zMDA0NDU4LnBuZyIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIiwKICAgICAgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIgogICAgfQogIF0KfQ==">
   <meta name="theme-color" content="#3b82f6">
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3004/3004458.png">
-  <link rel="icon" href="img/logo_gabriel.png" type="image/png">
 
   <style>
     :root {
@@ -26,9 +26,9 @@
       --taken-border: #2dd4bf; 
       --danger: #ef4444; 
       --border: #e2e8f0;
-      --shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
+    /* Reset e Estilo Mobile Nativo */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     
     body { 
@@ -38,33 +38,29 @@
       padding: 15px; 
       padding-bottom: 100px; 
       line-height: 1.5;
-      user-select: none; /* Cara de App: evita selecionar texto */
-      overscroll-behavior-y: contain;
+      user-select: none; /* Evita seleção de texto para parecer App */
+      overscroll-behavior-y: contain; /* Evita o "puxar para atualizar" do navegador */
     }
 
-    input, select { user-select: text; } /* Permite digitar nos campos */
+    input, select { user-select: text; }
 
-    /* Animação de Entrada */
+    /* Animação */
     @keyframes popIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* --- Auth Container --- */
+    /* Auth */
     #auth-container { 
-      max-width: 400px; 
-      margin: 40px auto; 
-      padding: 30px; 
-      background: white; 
-      border-radius: 20px; 
-      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1); 
-      border: 3px solid var(--primary);
+      max-width: 400px; margin: 40px auto; padding: 30px; 
+      background: white; border-radius: 20px; 
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1); border: 3px solid var(--primary);
     }
     
     .auth-tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid var(--border); }
     .auth-tab { 
       padding: 12px; cursor: pointer; color: var(--muted); 
-      font-weight: 700; font-size: 1.1rem; border-radius: 10px 10px 0 0; transition: all 0.2s;
+      font-weight: 700; font-size: 1.1rem; border-radius: 10px 10px 0 0;
     }
     .auth-tab.active { color: var(--primary); background: #eff6ff; border-bottom: 4px solid var(--primary); }
     
@@ -77,11 +73,11 @@
     .btn-main { 
       width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--tertiary)); 
       color: white; border: none; border-radius: 15px; font-weight: 800; font-size: 1.2rem; 
-      cursor: pointer; margin-top: 15px; box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3); transition: 0.1s;
+      cursor: pointer; margin-top: 15px; box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3);
     }
     .btn-main:active { transform: scale(0.98); }
 
-    /* --- App Layout --- */
+    /* App Layout */
     #app { max-width: 600px; margin: 0 auto; display: none; }
     
     header { 
@@ -93,60 +89,48 @@
     h1 { font-weight: 900; font-size: 1.8rem; color: #1e3a8a; }
     
     .section-title { 
-      font-size: 0.9rem; font-weight: 800; color: white; text-transform: uppercase; 
-      margin: 25px 0 12px; letter-spacing: 1.5px; background: var(--secondary); 
-      padding: 8px 15px; border-radius: 30px; display: inline-block;
+      font-size: 0.8rem; font-weight: 800; color: white; text-transform: uppercase; 
+      margin: 25px 0 12px; background: var(--secondary); 
+      padding: 6px 12px; border-radius: 30px; display: inline-block;
     }
     
     .history-title { 
-      font-size: 0.9rem; font-weight: 800; color: white; text-transform: uppercase; 
-      margin: 20px 0 10px; letter-spacing: 1.5px; background: var(--taken-border); 
-      padding: 8px 15px; border-radius: 30px; display: inline-block;
+      font-size: 0.8rem; font-weight: 800; color: white; background: var(--taken-border); 
+      padding: 6px 12px; border-radius: 30px; display: inline-block; margin: 20px 0 10px;
     }
     
     .vax-card { 
       background: var(--card); border: 3px solid var(--border); border-radius: 20px; 
-      padding: 18px; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-      transition: all 0.3s; position: relative; animation: popIn 0.3s ease-out;
+      padding: 18px; margin-bottom: 12px; animation: popIn 0.3s ease-out;
     }
     .vax-card.is-taken { background: var(--taken); border-color: var(--taken-border); }
     
-    .vax-name { font-weight: 800; font-size: 1.2rem; display: block; color: #1e40af; }
-    .vax-meta { font-size: 0.9rem; color: var(--muted); font-weight: 600; }
+    .vax-name { font-weight: 800; font-size: 1.1rem; display: block; color: #1e40af; }
+    .vax-meta { font-size: 0.85rem; color: var(--muted); font-weight: 600; }
     
     .badge-feito { 
-      background: linear-gradient(135deg, var(--taken-border), #2dd4bf); color: white; 
-      padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 900;
+      background: #2dd4bf; color: white; padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 900;
     }
 
-    .actions { display: flex; gap: 10px; margin-top: 15px; }
-    .btn-vax { 
-      flex: 1; padding: 12px; border-radius: 12px; border: none; 
-      font-weight: 700; cursor: pointer; font-size: 1rem;
-    }
-    .btn-now { background: linear-gradient(135deg, #4ade80, #22c55e); color: white; }
-    .btn-del { background: #fee2e2; color: var(--danger); flex: 0 0 60px; }
+    .actions { display: flex; gap: 10px; margin-top: 12px; }
+    .btn-vax { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; }
+    .btn-now { background: #22c55e; color: white; }
+    .btn-del { background: #fee2e2; color: var(--danger); flex: 0 0 50px; }
 
     .floating-add { 
-      position: fixed; bottom: 25px; right: 25px; width: 65px; height: 65px; 
+      position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; 
       background: linear-gradient(135deg, var(--secondary), #f59e0b); 
       color: white; border-radius: 50%; display: flex; align-items: center; 
-      justify-content: center; font-size: 35px; border: none; cursor: pointer; 
-      box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4); z-index: 50; transition: 0.3s;
+      justify-content: center; font-size: 30px; border: none; box-shadow: 0 5px 15px rgba(249, 115, 22, 0.4);
     }
-    .floating-add:active { transform: scale(0.9) rotate(90deg); }
-    
+
     .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; backdrop-filter: blur(3px); }
     .modal.active { display: flex; }
-    .modal-content { 
-      background: white; padding: 30px; border-radius: 25px; width: 100%; 
-      max-width: 420px; border: 4px solid var(--primary);
-    }
+    .modal-content { background: white; padding: 25px; border-radius: 25px; width: 100%; max-width: 400px; border: 4px solid var(--primary); }
 
     #toast { 
       position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); 
-      background: rgba(30, 41, 59, 0.9); color: white; padding: 12px 25px; 
-      border-radius: 50px; display: none; z-index: 1000; font-weight: 600;
+      background: #1e293b; color: white; padding: 10px 20px; border-radius: 50px; display: none; z-index: 1000;
     }
   </style>
 </head>
@@ -168,10 +152,9 @@
   <div id="app">
     <header>
       <h1>Vacinas do Gabriel</h1>
-      <p id="user-display" style="font-size: 0.85rem; color: var(--muted); font-weight:600;"></p>
-      <button onclick="signOutApp()" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.8rem; font-weight:700; text-decoration: underline; margin-top:5px;">Sair</button>
+      <p id="user-display" style="font-size: 0.8rem; color: var(--muted);"></p>
+      <button onclick="signOutApp()" style="background:none; border:none; color:var(--danger); font-size:0.8rem; text-decoration: underline; margin-top:5px;">Sair</button>
     </header>
-
     <div id="vax-list"></div>
     <button class="floating-add" id="btn-open-modal">+</button>
   </div>
@@ -180,28 +163,26 @@
     <div class="modal-content">
       <h3>Nova Vacina</h3>
       <input type="text" id="man-name" placeholder="Nome da Vacina">
-      <input type="text" id="man-dose" placeholder="Dose (ex: 1ª Dose, Única)">
-      <label style="font-size: 0.8rem; color: var(--muted); font-weight:700; display:block; margin-top:10px;">Data da Aplicação:</label>
+      <input type="text" id="man-dose" placeholder="Dose (ex: 1ª Dose)">
       <input type="date" id="man-date">
       <select id="man-sec">
         <option value="Manual">Extras / Outras</option>
         <option value="Nascimento">Nascimento</option>
         <option value="Infantil (até 15 meses)">Infantil (até 15 meses)</option>
         <option value="Reforços (4-6 anos)">Reforços (4-6 anos)</option>
-        <option value="Adolescência (9-14 anos)">Adolescência (9-14 anos)</option>
       </select>
       <button class="btn-main" id="btn-save-manual">Salvar Registro</button>
-      <button onclick="closeModal('modal-manual')" style="width:100%; background:none; border:none; color:var(--muted); font-weight:700; margin-top:15px; cursor:pointer;">Cancelar</button>
+      <button onclick="closeModal('modal-manual')" style="width:100%; background:none; border:none; margin-top:15px; font-weight:700; color:var(--muted);">Cancelar</button>
     </div>
   </div>
 
   <div class="modal" id="modal-confirm-password">
     <div class="modal-content" style="border-color: var(--danger);">
-      <h3 style="color:var(--danger);">Segurança!</h3>
-      <p style="font-size: 0.9rem; margin-bottom: 15px; font-weight:600;">Digite a senha mestra para remover:</p>
+      <h3>Segurança!</h3>
+      <p style="margin-bottom:10px;">Digite a senha mestra para apagar:</p>
       <input type="password" id="confirm-pass-input" placeholder="Senha Mestra">
-      <button class="btn-main" style="background: linear-gradient(135deg, var(--danger), #ff1744);" id="btn-confirm-delete">Remover Registro</button>
-      <button onclick="closeModal('modal-confirm-password')" style="width:100%; background:none; border:none; color:var(--muted); font-weight:700; margin-top:15px; cursor:pointer;">Cancelar</button>
+      <button class="btn-main" style="background: var(--danger);" id="btn-confirm-delete">Apagar Registro</button>
+      <button onclick="closeModal('modal-confirm-password')" style="width:100%; background:none; border:none; margin-top:15px; color:var(--muted);">Cancelar</button>
     </div>
   </div>
 
@@ -236,21 +217,15 @@
       { id:'pcv1', name:'Pneumocócica 15V', dose:'1ª Dose', sec:'Infantil (até 15 meses)' },
       { id:'menC1', name:'Meningo C', dose:'1ª Dose', sec:'Infantil (até 15 meses)' },
       { id:'scr1', name:'Tríplice Viral', dose:'1ª Dose', sec:'Infantil (até 15 meses)' },
-      { id:'hepa', name:'Hepatite A', dose:'Dose Única', sec:'Infantil (até 15 meses)' },
-      { id:'dtp_ref', name:'DTP (Tríplice)', dose:'1º Reforço', sec:'Reforços (4-6 anos)' },
-      { id:'vop_ref', name:'Pólio (VOP)', dose:'Reforço', sec:'Reforços (4-6 anos)' },
-      { id:'tetra_ref', name:'Varicela', dose:'2ª Dose', sec:'Reforços (4-6 anos)' }
+      { id:'hepa', name:'Hepatite A', dose:'Dose Única', sec:'Infantil (até 15 meses)' }
     ];
 
     function showToast(m) { 
-      const t = document.getElementById('toast'); 
-      t.innerText = m; t.style.display='block'; 
+      const t = document.getElementById('toast'); t.innerText = m; t.style.display='block'; 
       setTimeout(()=>t.style.display='none', 3000); 
     }
 
-    async function sync() {
-      if(state.user) await setDoc(doc(db, "users", state.user.uid), { taken: state.taken, manual: state.manual });
-    }
+    async function sync() { if(state.user) await setDoc(doc(db, "users", state.user.uid), { taken: state.taken, manual: state.manual }); }
 
     window.closeModal = (id) => document.getElementById(id).classList.remove('active');
 
@@ -262,22 +237,17 @@
           <div>
             <span class="vax-name">${v.name}</span>
             <span class="vax-meta">${v.dose}</span>
-            ${isTaken ? `<div style="font-size: 0.8rem; color: #15803d; font-weight:700; margin-top: 5px;">🎈 ✔ Aplicada 🎈</div>` : ''}
           </div>
           ${isTaken ? `<span class="badge-feito">FEITO</span>` : ''}
         </div>
         <div class="actions">
-          ${!isTaken ? 
-            `<button class="btn-vax btn-now" onclick="toggleVax('${v.id}', true)">Marcar Tomada</button>` : 
-            `<button class="btn-vax btn-del" onclick="toggleVax('${v.id}', false)">🗑️</button>`
-          }
+          ${!isTaken ? `<button class="btn-vax btn-now" onclick="toggleVax('${v.id}', true)">Marcar</button>` : `<button class="btn-vax btn-del" onclick="toggleVax('${v.id}', false)">🗑️</button>`}
         </div>`;
       return card;
     }
 
     function render() {
-      const list = document.getElementById('vax-list');
-      list.innerHTML = '';
+      const list = document.getElementById('vax-list'); list.innerHTML = '';
       const allVax = [...vaccineDB, ...state.manual];
       const taken = allVax.filter(v => state.taken[v.id]);
       const pending = allVax.filter(v => !state.taken[v.id]);
@@ -292,26 +262,15 @@
       const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b.split('/').reverse().join('-')) - new Date(a.split('/').reverse().join('-')));
       
       if(sortedDates.length > 0) {
-        const histHeader = document.createElement('div');
-        histHeader.style = "margin-bottom: 10px; font-size: 0.9rem; font-weight: 900; color: var(--taken-border); text-align: center;";
-        histHeader.innerText = "⭐ MINHAS VACINAS TOMADAS ⭐";
-        list.appendChild(histHeader);
-
         sortedDates.forEach(date => {
           const dateDiv = document.createElement('div');
-          dateDiv.style.marginBottom = "15px";
-          dateDiv.innerHTML = `<div class="history-title">📅 Dia ${date}</div>`;
+          dateDiv.innerHTML = `<div class="history-title">📅 ${date}</div>`;
           grouped[date].forEach(v => dateDiv.appendChild(createCard(v, true)));
           list.appendChild(dateDiv);
         });
       }
 
-      const pendHeader = document.createElement('h2');
-      pendHeader.style = "margin: 45px 0 10px; font-size: 1.1rem; color: var(--muted); text-align: center; font-weight:800;";
-      pendHeader.innerText = "⏳ PRÓXIMAS A TOMAR ⏳";
-      list.appendChild(pendHeader);
-
-      const sections = ['Nascimento', 'Infantil (até 15 meses)', 'Reforços (4-6 anos)', 'Adolescência (9-14 anos)', 'Manual'];
+      const sections = ['Nascimento', 'Infantil (até 15 meses)', 'Reforços (4-6 anos)', 'Manual'];
       sections.forEach(s => {
         const vaxInSec = pending.filter(v => v.sec === s);
         if(vaxInSec.length > 0) {
@@ -325,15 +284,10 @@
 
     window.toggleVax = async (id, status) => {
       if(status) {
-        const userDate = prompt("Que dia o Gabriel tomou esta vacina? (DD/MM/AAAA)", new Date().toLocaleDateString('pt-BR'));
-        if(userDate) {
-          state.taken[id] = { date: userDate };
-          await sync(); render();
-          showToast("Registro Salvo!");
-        }
+        const userDate = prompt("Data (DD/MM/AAAA):", new Date().toLocaleDateString('pt-BR'));
+        if(userDate) { state.taken[id] = { date: userDate }; await sync(); render(); showToast("Salvo!"); }
       } else {
-        pendingDeleteId = id;
-        document.getElementById('modal-confirm-password').classList.add('active');
+        pendingDeleteId = id; document.getElementById('modal-confirm-password').classList.add('active');
       }
     };
 
@@ -341,17 +295,15 @@
       if(document.getElementById('confirm-pass-input').value === MASTER_PASS) {
         delete state.taken[pendingDeleteId];
         state.manual = state.manual.filter(m => m.id !== pendingDeleteId);
-        await sync(); render();
-        closeModal('modal-confirm-password');
-        showToast("Registro removido.");
+        await sync(); render(); closeModal('modal-confirm-password'); showToast("Removido.");
       } else { showToast("Senha Incorreta!"); }
     };
 
     document.getElementById('btn-save-manual').onclick = async () => {
       const name = document.getElementById('man-name').value, rawDate = document.getElementById('man-date').value;
-      if(!name || !rawDate) return showToast("Preencha o nome e a data!");
+      if(!name || !rawDate) return showToast("Preencha tudo!");
       const [y, m, d] = rawDate.split('-'), formatted = `${d}/${m}/${y}`, id = 'man_' + Date.now();
-      state.manual.push({ id, name, dose: document.getElementById('man-dose').value || 'Dose Única', sec: document.getElementById('man-sec').value });
+      state.manual.push({ id, name, dose: document.getElementById('man-dose').value || 'Única', sec: document.getElementById('man-sec').value });
       state.taken[id] = { date: formatted };
       await sync(); render(); closeModal('modal-manual');
     };
@@ -361,21 +313,17 @@
     function updateAuth() { 
       document.getElementById('tab-login').classList.toggle('active', isLogin);
       document.getElementById('tab-signup').classList.toggle('active', !isLogin);
-      document.getElementById('btn-auth').innerText = isLogin ? 'Iniciar Aventura!' : 'Criar Nova Conta';
+      document.getElementById('btn-auth').innerText = isLogin ? 'Iniciar Aventura!' : 'Criar Conta';
     }
 
     document.getElementById('btn-auth').onclick = async () => {
       const e = document.getElementById('email').value, p = document.getElementById('password').value;
-      if(!e || !p) return showToast("Preencha os campos!");
       try { isLogin ? await signInWithEmailAndPassword(auth, e, p) : await createUserWithEmailAndPassword(auth, e, p); }
-      catch { showToast("Erro na conta ou senha."); }
+      catch { showToast("Erro na senha!"); }
     };
     
     window.signOutApp = () => signOut(auth);
-    document.getElementById('btn-open-modal').onclick = () => {
-      document.getElementById('man-date').valueAsDate = new Date();
-      document.getElementById('modal-manual').classList.add('active');
-    };
+    document.getElementById('btn-open-modal').onclick = () => document.getElementById('modal-manual').classList.add('active');
 
     onAuthStateChanged(auth, async (user) => {
       if(user) {
