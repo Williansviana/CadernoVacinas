@@ -1,0 +1,17 @@
+{
+  "name": "Carteira do Gabriel",
+  "short_name": "Vax Gabriel",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "description": "Acompanhamento de vacinas super divertido do Gabriel.",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3004/3004458.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
