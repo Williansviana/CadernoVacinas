@@ -2,31 +2,33 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎈 Carteira Super Divertida do Gabriel 🎈</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Carteira Super Divertida do Gabriel </title>
+
+  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkNhcnRlaXJhIGRvIEdhYnJpZWwiLAogICJzaG9ydF9uYW1lIjogIlZheCBHYWJyaWVsIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmZmZmZmYiLAogICJ0aGVtZV9jb2xvciI6ICIjM2I4MmY2IiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9jZG4taWNvbnMtcG5nLmZsYXRpY29uLmNvbS81MTIvMzAwNC8zMDA0NDU4LnBuZyIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIiwKICAgICAgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIgogICAgfQogIF0KfQ==">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#3b82f6">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3004/3004458.png">
+  <link rel="icon" href="img/logo_gabriel.png" type="image/png">
+
   <style>
     :root {
-      /* Fundo Branco */
       --bg: #ffffff; 
       --card: #ffffff; 
       --text: #1e293b; 
       --muted: #64748b;
-      
-      /* Cores Alegres e Vibrantes */
-      --primary: #3b82f6; /* Azul Alegre */
-      --secondary: #f97316; /* Laranja Divertido */
-      --tertiary: #a855f7; /* Roxo Mágico */
-      --taken: #e0f2f1; /* Verde Água Suave para tomadas */
-      --taken-border: #2dd4bf; /* Verde Água Brilhante */
-      --danger: #ef4444; /* Vermelho Alerta */
-      
-      /* Borda Colorida Geral */
+      --primary: #3b82f6; 
+      --secondary: #f97316; 
+      --tertiary: #a855f7; 
+      --taken: #e0f2f1; 
+      --taken-border: #2dd4bf; 
+      --danger: #ef4444; 
       --border: #e2e8f0;
-      
       --shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     
     body { 
       font-family: 'Inter', system-ui, -apple-system, sans-serif; 
@@ -35,9 +37,19 @@
       padding: 15px; 
       padding-bottom: 100px; 
       line-height: 1.5;
+      user-select: none; /* Cara de App: evita selecionar texto */
+      overscroll-behavior-y: contain;
     }
-    
-    /* --- Estilo Auth (Login) --- */
+
+    input, select { user-select: text; } /* Permite digitar nos campos */
+
+    /* Animação de Entrada */
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- Auth Container --- */
     #auth-container { 
       max-width: 400px; 
       margin: 40px auto; 
@@ -45,203 +57,95 @@
       background: white; 
       border-radius: 20px; 
       box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1); 
-      border: 3px solid var(--primary); /* Borda Azul na Auth */
+      border: 3px solid var(--primary);
     }
     
     .auth-tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid var(--border); }
     .auth-tab { 
-      padding: 12px; 
-      cursor: pointer; 
-      color: var(--muted); 
-      font-weight: 700; 
-      font-size: 1.1rem;
-      border-radius: 10px 10px 0 0;
-      transition: all 0.2s;
+      padding: 12px; cursor: pointer; color: var(--muted); 
+      font-weight: 700; font-size: 1.1rem; border-radius: 10px 10px 0 0; transition: all 0.2s;
     }
-    .auth-tab.active { 
-      color: var(--primary); 
-      background: #eff6ff;
-      border-bottom: 4px solid var(--primary); 
-    }
+    .auth-tab.active { color: var(--primary); background: #eff6ff; border-bottom: 4px solid var(--primary); }
     
     input, select { 
-      width: 100%; 
-      padding: 14px; 
-      margin: 10px 0; 
-      border: 2px solid #cbd5e1; 
-      border-radius: 12px; 
-      font-size: 1rem; 
-      outline: none; 
-      transition: all 0.2s;
+      width: 100%; padding: 14px; margin: 10px 0; 
+      border: 2px solid #cbd5e1; border-radius: 12px; font-size: 1rem; outline: none; 
     }
     input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
     
-    /* --- Botões Alegres --- */
     .btn-main { 
-      width: 100%; 
-      padding: 16px; 
-      background: linear-gradient(135deg, var(--primary), var(--tertiary)); 
-      color: white; 
-      border: none; 
-      border-radius: 15px; 
-      font-weight: 800; 
-      font-size: 1.2rem; 
-      cursor: pointer; 
-      margin-top: 15px; 
-      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3);
-      transition: transform 0.1s, box-shadow 0.2s;
+      width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--tertiary)); 
+      color: white; border: none; border-radius: 15px; font-weight: 800; font-size: 1.2rem; 
+      cursor: pointer; margin-top: 15px; box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3); transition: 0.1s;
     }
-    .btn-main:active { transform: scale(0.98); box-shadow: 0 2px 5px rgba(168, 85, 247, 0.3); }
+    .btn-main:active { transform: scale(0.98); }
 
     /* --- App Layout --- */
     #app { max-width: 600px; margin: 0 auto; display: none; }
     
     header { 
-      text-align: center; 
-      margin-bottom: 25px; 
-      position: sticky; 
-      top: 0; 
-      background: rgba(255, 255, 255, 0.95); 
-      backdrop-filter: blur(5px); 
-      padding: 15px 0; 
-      z-index: 10; 
-      border-bottom: 3px solid #f1f5f9; 
+      text-align: center; margin-bottom: 25px; position: sticky; top: 0; 
+      background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); 
+      padding: 15px 0; z-index: 10; border-bottom: 3px solid #f1f5f9; 
     }
     
-    h1 { font-weight: 900; font-size: 1.8rem; color: #1e3a8a; } /* Azul Escuro Título */
+    h1 { font-weight: 900; font-size: 1.8rem; color: #1e3a8a; }
     
-    /* --- Títulos de Seção Divertidos --- */
     .section-title { 
-      font-size: 0.9rem; 
-      font-weight: 800; 
-      color: white; 
-      text-transform: uppercase; 
-      margin: 25px 0 12px; 
-      letter-spacing: 1.5px; 
-      background: var(--secondary); /* Laranja */
-      padding: 8px 15px;
-      border-radius: 30px;
-      display: inline-block;
-      box-shadow: 0 3px 6px rgba(249, 115, 22, 0.2);
+      font-size: 0.9rem; font-weight: 800; color: white; text-transform: uppercase; 
+      margin: 25px 0 12px; letter-spacing: 1.5px; background: var(--secondary); 
+      padding: 8px 15px; border-radius: 30px; display: inline-block;
     }
     
     .history-title { 
-      font-size: 0.9rem; 
-      font-weight: 800; 
-      color: white; 
-      text-transform: uppercase; 
-      margin: 20px 0 10px; 
-      letter-spacing: 1.5px; 
-      background: var(--taken-border); /* Verde Água */
-      padding: 8px 15px;
-      border-radius: 30px;
-      display: inline-block;
-      box-shadow: 0 3px 6px rgba(45, 212, 191, 0.2);
+      font-size: 0.9rem; font-weight: 800; color: white; text-transform: uppercase; 
+      margin: 20px 0 10px; letter-spacing: 1.5px; background: var(--taken-border); 
+      padding: 8px 15px; border-radius: 30px; display: inline-block;
     }
     
-    /* --- Cards de Vacina Animados --- */
     .vax-card { 
-      background: var(--card); 
-      border: 3px solid var(--border); 
-      border-radius: 20px; 
-      padding: 18px; 
-      margin-bottom: 12px; 
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-      transition: all 0.3s;
-      position: relative;
-      overflow: hidden;
+      background: var(--card); border: 3px solid var(--border); border-radius: 20px; 
+      padding: 18px; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+      transition: all 0.3s; position: relative; animation: popIn 0.3s ease-out;
     }
-    .vax-card:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 8px 20px rgba(0,0,0,0.1); border-color: #cbd5e1; }
+    .vax-card.is-taken { background: var(--taken); border-color: var(--taken-border); }
     
-    /* Estilo Vacina Tomada (Verde) */
-    .vax-card.is-taken { 
-      background: var(--taken); 
-      border-color: var(--taken-border); 
-      margin-bottom: 6px; 
-    }
-    
-    .vax-name { font-weight: 800; font-size: 1.2rem; display: block; color: #1e40af; } /* Azul Vacina */
+    .vax-name { font-weight: 800; font-size: 1.2rem; display: block; color: #1e40af; }
     .vax-meta { font-size: 0.9rem; color: var(--muted); font-weight: 600; }
     
     .badge-feito { 
-      background: linear-gradient(135deg, var(--taken-border), #2dd4bf);
-      color: white; 
-      padding: 4px 10px; 
-      border-radius: 8px; 
-      font-size: 0.75rem; 
-      font-weight: 900; 
-      text-transform: uppercase;
-      box-shadow: 0 2px 4px rgba(45, 212, 191, 0.3);
+      background: linear-gradient(135deg, var(--taken-border), #2dd4bf); color: white; 
+      padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 900;
     }
 
-    /* --- Ações dos Cards --- */
     .actions { display: flex; gap: 10px; margin-top: 15px; }
     .btn-vax { 
-      flex: 1; 
-      padding: 12px; 
-      border-radius: 12px; 
-      border: none; 
-      font-weight: 700; 
-      cursor: pointer; 
-      font-size: 1rem; 
-      transition: all 0.1s;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+      flex: 1; padding: 12px; border-radius: 12px; border: none; 
+      font-weight: 700; cursor: pointer; font-size: 1rem;
     }
-    .btn-vax:active { transform: scale(0.97); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-    
-    .btn-now { background: linear-gradient(135deg, #4ade80, #22c55e); color: white; } /* Verde Alegria */
-    .btn-del { background: #fee2e2; color: var(--danger); flex: 0 0 60px; font-size: 1.2rem; } /* Vermelho Suave */
+    .btn-now { background: linear-gradient(135deg, #4ade80, #22c55e); color: white; }
+    .btn-del { background: #fee2e2; color: var(--danger); flex: 0 0 60px; }
 
-    /* --- Botão Flutuante Super Colorido --- */
     .floating-add { 
-      position: fixed; 
-      bottom: 25px; 
-      right: 25px; 
-      width: 65px; 
-      height: 65px; 
-      background: linear-gradient(135deg, var(--secondary), #f59e0b); /* Laranja-Amarelo */
-      color: white; 
-      border-radius: 50%; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      font-size: 35px; 
-      border: none; 
-      cursor: pointer; 
-      box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4); 
-      z-index: 50; 
-      transition: all 0.3s;
+      position: fixed; bottom: 25px; right: 25px; width: 65px; height: 65px; 
+      background: linear-gradient(135deg, var(--secondary), #f59e0b); 
+      color: white; border-radius: 50%; display: flex; align-items: center; 
+      justify-content: center; font-size: 35px; border: none; cursor: pointer; 
+      box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4); z-index: 50; transition: 0.3s;
     }
-    .floating-add:hover { transform: rotate(90deg) scale(1.1); box-shadow: 0 10px 25px rgba(249, 115, 22, 0.5); }
+    .floating-add:active { transform: scale(0.9) rotate(90deg); }
     
-    /* --- Modais Coloridos --- */
     .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; backdrop-filter: blur(3px); }
     .modal.active { display: flex; }
     .modal-content { 
-      background: white; 
-      padding: 30px; 
-      border-radius: 25px; 
-      width: 100%; 
-      max-width: 420px; 
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15); 
-      border: 4px solid var(--primary); /* Borda Azul no Modal */
+      background: white; padding: 30px; border-radius: 25px; width: 100%; 
+      max-width: 420px; border: 4px solid var(--primary);
     }
-    .modal-content h3 { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 15px; }
 
-    /* --- Toast Alegre --- */
     #toast { 
-      position: fixed; 
-      bottom: 100px; 
-      left: 50%; 
-      transform: translateX(-50%); 
-      background: rgba(30, 41, 59, 0.9); 
-      color: white; 
-      padding: 12px 25px; 
-      border-radius: 50px; 
-      display: none; 
-      z-index: 1000; 
-      font-weight: 600; 
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); 
+      background: rgba(30, 41, 59, 0.9); color: white; padding: 12px 25px; 
+      border-radius: 50px; display: none; z-index: 1000; font-weight: 600;
     }
   </style>
 </head>
@@ -285,8 +189,8 @@
         <option value="Reforços (4-6 anos)">Reforços (4-6 anos)</option>
         <option value="Adolescência (9-14 anos)">Adolescência (9-14 anos)</option>
       </select>
-      <button class="btn-main" id="btn-save-manual" style="margin-top:20px;">Salvar Registro</button>
-      <button onclick="closeModal('modal-manual')" style="width:100%; background:none; border:none; color:var(--muted); font-weight:700; margin-top:10px; cursor:pointer;">Cancelar</button>
+      <button class="btn-main" id="btn-save-manual">Salvar Registro</button>
+      <button onclick="closeModal('modal-manual')" style="width:100%; background:none; border:none; color:var(--muted); font-weight:700; margin-top:15px; cursor:pointer;">Cancelar</button>
     </div>
   </div>
 
@@ -295,8 +199,8 @@
       <h3 style="color:var(--danger);">Segurança!</h3>
       <p style="font-size: 0.9rem; margin-bottom: 15px; font-weight:600;">Digite a senha mestra para remover:</p>
       <input type="password" id="confirm-pass-input" placeholder="Senha Mestra">
-      <button class="btn-main" style="background: linear-gradient(135deg, var(--danger), #ff1744); box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);" id="btn-confirm-delete">Remover Registro</button>
-      <button onclick="closeModal('modal-confirm-password')" style="width:100%; background:none; border:none; color:var(--muted); font-weight:700; margin-top:10px; cursor:pointer;">Cancelar</button>
+      <button class="btn-main" style="background: linear-gradient(135deg, var(--danger), #ff1744);" id="btn-confirm-delete">Remover Registro</button>
+      <button onclick="closeModal('modal-confirm-password')" style="width:100%; background:none; border:none; color:var(--muted); font-weight:700; margin-top:15px; cursor:pointer;">Cancelar</button>
     </div>
   </div>
 
@@ -305,7 +209,6 @@
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- Sua Configuração do Firebase ---
     const firebaseConfig = {
       apiKey: "AIzaSyAa2LcYIJCoGJ4AJmdA8VeGY6Ad9MQePAw",
       authDomain: "carteira-vacina-7ffd1.firebaseapp.com",
@@ -324,7 +227,6 @@
     let pendingDeleteId = null;
     const MASTER_PASS = "370"; 
 
-    // --- Base de Vacinas Padrão ---
     const vaccineDB = [
       { id:'bcg', name:'BCG', dose:'Única', sec:'Nascimento' },
       { id:'hb', name:'Hepatite B', dose:'Nascimento', sec:'Nascimento' },
@@ -339,7 +241,6 @@
       { id:'tetra_ref', name:'Varicela', dose:'2ª Dose', sec:'Reforços (4-6 anos)' }
     ];
 
-    // --- Funções Auxiliares UI ---
     function showToast(m) { 
       const t = document.getElementById('toast'); 
       t.innerText = m; t.style.display='block'; 
@@ -352,7 +253,6 @@
 
     window.closeModal = (id) => document.getElementById(id).classList.remove('active');
 
-    // --- Criar o HTML dos Cards ---
     function createCard(v, isTaken) {
       const card = document.createElement('div');
       card.className = `vax-card ${isTaken ? 'is-taken' : ''}`;
@@ -374,16 +274,13 @@
       return card;
     }
 
-    // --- Renderizar Dashboard (Histórico no Topo) ---
     function render() {
       const list = document.getElementById('vax-list');
       list.innerHTML = '';
       const allVax = [...vaccineDB, ...state.manual];
-      
       const taken = allVax.filter(v => state.taken[v.id]);
       const pending = allVax.filter(v => !state.taken[v.id]);
 
-      // --- 1. HISTÓRICO NO TOPO (VerdeÁgua) ---
       const grouped = {};
       taken.forEach(v => {
         const d = state.taken[v.id].date;
@@ -408,7 +305,6 @@
         });
       }
 
-      // --- 2. PENDENTES ABAIXO (Laranja) ---
       const pendHeader = document.createElement('h2');
       pendHeader.style = "margin: 45px 0 10px; font-size: 1.1rem; color: var(--muted); text-align: center; font-weight:800;";
       pendHeader.innerText = "⏳ PRÓXIMAS A TOMAR ⏳";
@@ -426,7 +322,6 @@
       });
     }
 
-    // --- Lógica de Marcar/Remover ---
     window.toggleVax = async (id, status) => {
       if(status) {
         const userDate = prompt("Que dia o Gabriel tomou esta vacina? (DD/MM/AAAA)", new Date().toLocaleDateString('pt-BR'));
@@ -458,10 +353,8 @@
       state.manual.push({ id, name, dose: document.getElementById('man-dose').value || 'Dose Única', sec: document.getElementById('man-sec').value });
       state.taken[id] = { date: formatted };
       await sync(); render(); closeModal('modal-manual');
-      document.getElementById('man-name').value = '';
     };
 
-    // --- Lógica Auth ---
     document.getElementById('tab-login').onclick = () => { isLogin=true; updateAuth(); };
     document.getElementById('tab-signup').onclick = () => { isLogin=false; updateAuth(); };
     function updateAuth() { 
@@ -483,7 +376,6 @@
       document.getElementById('modal-manual').classList.add('active');
     };
 
-    // --- Monitorar Estado Auth ---
     onAuthStateChanged(auth, async (user) => {
       if(user) {
         state.user = user;
@@ -496,8 +388,6 @@
       } else {
         document.getElementById('auth-container').style.display = 'block';
         document.getElementById('app').style.display = 'none';
-        document.getElementById('email').value = '';
-        document.getElementById('password').value = '';
       }
     });
   </script>
