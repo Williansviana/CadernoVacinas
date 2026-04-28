@@ -1,365 +1,332 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Carteira do Gabriel</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Carteira do Gabriel</title>
 
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3004/3004458.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Vax Gabriel">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3004/3004458.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Vax Gabriel">
 
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#3b82f6">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3b82f6">
 
-  <style>
-    :root {
-      --bg: #f8fafc; 
-      --card: #ffffff; 
-      --text: #1e293b; 
-      --muted: #64748b;
-      --primary: #3b82f6; 
-      --secondary: #f97316; 
-      --tertiary: #a855f7; 
-      --taken: #f0fdf4; 
-      --taken-border: #22c55e; 
-      --danger: #ef4444; 
-      --border: #e2e8f0;
-    }
+    <style>
+        :root {
+            --bg: #f8fafc; 
+            --card: #ffffff; 
+            --text: #1e293b; 
+            --muted: #64748b;
+            --primary: #3b82f6; 
+            --secondary: #f97316; 
+            --tertiary: #a855f7; 
+            --taken: #e0f2fe; 
+            --taken-border: #22c55e; 
+            --danger: #ef4444; 
+            --border: #e2e8f0;
+        }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    
-    body { 
-      font-family: 'Inter', system-ui, -apple-system, sans-serif; 
-      background: var(--bg); 
-      color: var(--text); 
-      padding: 15px; 
-      padding-bottom: 100px; 
-      line-height: 1.5;
-      overflow-y: auto;
-    }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            padding: 15px; 
+            padding-bottom: 100px; 
+            line-height: 1.5;
+        }
 
-    /* Auth Container */
-    #auth-container { 
-      max-width: 400px; margin: 40px auto; padding: 30px; 
-      background: white; border-radius: 20px; 
-      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1); border: 3px solid var(--primary);
-    }
-    
-    .auth-tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid var(--border); }
-    .auth-tab { padding: 12px; cursor: pointer; color: var(--muted); font-weight: 700; flex: 1; text-align: center; }
-    .auth-tab.active { color: var(--primary); border-bottom: 4px solid var(--primary); }
-    
-    input, select { 
-      width: 100%; padding: 14px; margin: 10px 0; 
-      border: 2px solid #cbd5e1; border-radius: 12px; font-size: 1rem; outline: none; 
-    }
-    
-    .btn-main { 
-      width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--tertiary)); 
-      color: white; border: none; border-radius: 15px; font-weight: 800; font-size: 1.1rem; cursor: pointer;
-    }
+        #auth-container { 
+            max-width: 400px; margin: 40px auto; padding: 30px; 
+            background: white; border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1); border: 3px solid var(--primary);
+        }
+        
+        .auth-tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid var(--border); }
+        .auth-tab { padding: 12px; cursor: pointer; color: var(--muted); font-weight: 700; flex: 1; text-align: center; }
+        .auth-tab.active { color: var(--primary); border-bottom: 4px solid var(--primary); }
+        
+        input, select { 
+            width: 100%; padding: 14px; margin: 10px 0; 
+            border: 2px solid #cbd5e1; border-radius: 12px; font-size: 1rem; outline: none; 
+        }
+        
+        .btn-main { 
+            width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--tertiary)); 
+            color: white; border: none; border-radius: 15px; font-weight: 800; font-size: 1.1rem; cursor: pointer;
+        }
 
-    #app { max-width: 600px; margin: 0 auto; display: none; }
-    
-    header { 
-      text-align: center; margin-bottom: 20px; position: sticky; top: 0; 
-      background: var(--bg); padding: 10px 0; z-index: 10;
-    }
+        #app { max-width: 600px; margin: 0 auto; display: none; }
+        
+        header { 
+            text-align: center; margin-bottom: 20px; position: sticky; top: 0; 
+            background: var(--bg); padding: 10px 0; z-index: 10;
+        }
 
-    .section-title { 
-      font-size: 0.75rem; font-weight: 800; color: white; text-transform: uppercase; 
-      margin: 20px 0 10px; background: var(--primary); padding: 5px 15px; border-radius: 20px; display: inline-block;
-    }
-    
-    .history-title { 
-      font-size: 0.75rem; font-weight: 800; color: white; background: var(--taken-border); 
-      padding: 5px 15px; border-radius: 20px; display: inline-block; margin: 20px 0 10px;
-    }
-    
-    .vax-card { 
-      background: var(--card); border: 2px solid var(--border); border-radius: 15px; 
-      padding: 15px; margin-bottom: 10px; transition: 0.2s;
-    }
-    .vax-card.is-taken { background: var(--taken); border-color: var(--taken-border); }
-    .vax-name { font-weight: 800; font-size: 1.1rem; color: #1e3a8a; display: block; }
-    .vax-meta { font-size: 0.85rem; color: var(--muted); }
-    
-    .badge-feito { 
-      background: var(--taken-border); color: white; font-size: 0.7rem; 
-      padding: 2px 8px; border-radius: 5px; font-weight: 900; 
-    }
+        .section-title { 
+            font-size: 0.75rem; font-weight: 800; color: white; text-transform: uppercase; 
+            margin: 20px 0 10px; background: var(--primary); padding: 5px 15px; border-radius: 20px; display: inline-block;
+        }
+        
+        .history-title { 
+            font-size: 0.75rem; font-weight: 800; color: white; background: var(--taken-border); 
+            padding: 5px 15px; border-radius: 20px; display: inline-block; margin: 20px 0 10px;
+        }
+        
+        .vax-card { 
+            background: var(--card); border: 2px solid var(--border); border-radius: 15px; 
+            padding: 15px; margin-bottom: 10px; transition: 0.2s;
+        }
+        .vax-card.is-taken { background: var(--taken); border-color: var(--taken-border); }
+        .vax-name { font-weight: 800; font-size: 1.1rem; color: #1e3a8a; display: block; }
+        .vax-meta { font-size: 0.85rem; color: var(--muted); }
+        
+        .badge-feito { 
+            background: var(--taken-border); color: white; font-size: 0.7rem; 
+            padding: 2px 8px; border-radius: 5px; font-weight: 900; 
+        }
 
-    .actions { display: flex; gap: 8px; margin-top: 10px; }
-    .btn-vax { flex: 1; padding: 10px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; }
-    .btn-now { background: #22c55e; color: white; }
-    .btn-del { background: #fee2e2; color: var(--danger); flex: 0 0 50px; }
+        .actions { display: flex; gap: 8px; margin-top: 10px; }
+        .btn-vax { flex: 1; padding: 10px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; }
+        .btn-now { background: #22c55e; color: white; }
+        .btn-del { background: #fee2e2; color: var(--danger); flex: 0 0 50px; }
 
-    .floating-add { 
-      position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; 
-      background: var(--secondary); color: white; border-radius: 50%; 
-      font-size: 30px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 90;
-    }
+        .floating-add { 
+            position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; 
+            background: var(--secondary); color: white; border-radius: 50%; 
+            font-size: 30px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 90;
+        }
 
-    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
-    .modal.active { display: flex; }
-    .modal-content { background: white; padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; }
 
-    #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #334155; color: white; padding: 12px 24px; border-radius: 50px; display: none; z-index: 1000; font-size: 0.9rem; }
-  </style>
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #334155; color: white; padding: 12px 24px; border-radius: 50px; display: none; z-index: 1000; font-size: 0.9rem; text-align: center; }
+    </style>
 </head>
 <body>
 
-  <div id="toast"></div>
+    <div id="toast"></div>
 
-  <div id="auth-container">
-    <h2 style="text-align:center; margin-bottom:20px; color:var(--primary);">Carteira do Gabriel</h2>
-    <div class="auth-tabs">
-      <div id="tab-login" class="auth-tab active">Entrar</div>
-      <div id="tab-signup" class="auth-tab">Cadastrar</div>
-    </div>
-    <input type="email" id="email" placeholder="E-mail">
-    <input type="password" id="password" placeholder="Senha">
-    <button id="btn-auth" class="btn-main">Entrar</button>
-  </div>
-
-  <div id="app">
-    <header>
-      <h1>Vacinas do Gabriel</h1>
-      <p id="user-display" style="font-size: 0.8rem; color: var(--muted);"></p>
-      <button onclick="signOutApp()" style="background:none; border:none; color:var(--danger); cursor:pointer;">Sair</button>
-    </header>
-    <div id="vax-list"></div>
-    <button class="floating-add" id="btn-open-modal">+</button>
-  </div>
-
-  <div class="modal" id="modal-manual">
-    <div class="modal-content">
-      <h3 style="margin-bottom:15px">Nova Vacina</h3>
-      <input type="text" id="man-name" placeholder="Nome da Vacina">
-      <input type="text" id="man-dose" placeholder="Dose (ex: 1ª Dose)">
-      <input type="date" id="man-date">
-      <select id="man-sec">
-        <option value="Manual">Extras / Outras</option>
-        <option value="Nascimento">Nascimento</option>
-        <option value="Infantil (até 15 meses)">Infantil (até 15 meses)</option>
-        <option value="Reforços (4-6 anos)">Reforços (4-6 anos)</option>
-      </select>
-      <button class="btn-main" id="btn-save-manual">Salvar</button>
-      <button onclick="closeModal('modal-manual')" style="width:100%; background:none; border:none; margin-top:15px; color:var(--muted);">Cancelar</button>
-    </div>
-  </div>
-
-  <div class="modal" id="modal-confirm-password">
-    <div class="modal-content">
-      <h3>Apagar Registro</h3>
-      <p style="margin: 10px 0; color: var(--muted);">Digite a senha mestra:</p>
-      <input type="password" id="confirm-pass-input" placeholder="Senha">
-      <button class="btn-main" style="background: var(--danger);" id="btn-confirm-delete">Apagar</button>
-      <button onclick="closeModal('modal-confirm-password')" style="width:100%; background:none; border:none; margin-top:15px; color:var(--muted);">Cancelar</button>
-    </div>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    // Registro do Service Worker para PWA
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
-    }
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAa2LcYIJCoGJ4AJmdA8VeGY6Ad9MQePAw",
-      authDomain: "carteira-vacina-7ffd1.firebaseapp.com",
-      projectId: "carteira-vacina-7ffd1",
-      storageBucket: "carteira-vacina-7ffd1.firebasestorage.app",
-      messagingSenderId: "96202787745",
-      appId: "1:96202787745:web:67fdabcfc525b0d1ac99e0"
-    };
-
-    const firebaseApp = initializeApp(firebaseConfig);
-    const auth = getAuth(firebaseApp);
-    const db = getFirestore(firebaseApp);
-
-    let state = { user: null, taken: {}, manual: [] };
-    let isLogin = true;
-    let pendingDeleteId = null;
-    const MASTER_PASS = "370"; 
-
-    const vaccineDB = [
-      { id:'bcg', name:'BCG', dose:'Única', sec:'Nascimento' },
-      { id:'hb', name:'Hepatite B', dose:'Nascimento', sec:'Nascimento' },
-      { id:'penta1', name:'Pentavalente', dose:'1ª Dose', sec:'Infantil (até 15 meses)' },
-      { id:'vip1', name:'Pólio (VIP)', dose:'1ª Dose', sec:'Infantil (até 15 meses)' },
-      { id:'pcv1', name:'Pneumocócica 15V', dose:'1ª Dose', sec:'Infantil (até 15 meses)' },
-      { id:'menC1', name:'Meningo C', dose:'1ª Dose', sec:'Infantil (até 15 meses)' },
-      { id:'scr1', name:'Tríplice Viral', dose:'1ª Dose', sec:'Infantil (até 15 meses)' },
-      { id:'hepa', name:'Hepatite A', dose:'Dose Única', sec:'Infantil (até 15 meses)' }
-    ];
-
-    function showToast(m) { 
-      const t = document.getElementById('toast'); t.innerText = m; t.style.display='block'; 
-      setTimeout(()=>t.style.display='none', 3000); 
-    }
-
-    async function sync() { 
-      if(state.user) {
-        await setDoc(doc(db, "users", state.user.uid), { taken: state.taken, manual: state.manual });
-      }
-    }
-
-    window.closeModal = (id) => document.getElementById(id).classList.remove('active');
-
-    function createCard(v, isTaken) {
-      const card = document.createElement('div');
-      card.className = `vax-card ${isTaken ? 'is-taken' : ''}`;
-      card.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <span class="vax-name">${v.name}</span>
-            <span class="vax-meta">${v.dose}</span>
-          </div>
-          ${isTaken ? `<span class="badge-feito">FEITO</span>` : ''}
+    <div id="auth-container">
+        <h2 style="text-align:center; margin-bottom:20px; color:var(--primary);">Carteira do Gabriel</h2>
+        <div class="auth-tabs">
+            <div id="tab-login" class="auth-tab active">Entrar</div>
+            <div id="tab-signup" class="auth-tab">Cadastrar</div>
         </div>
-        <div class="actions">
-          ${!isTaken ? 
-            `<button class="btn-vax btn-now" onclick="toggleVax('${v.id}', true)">Marcar</button>` : 
-            `<button class="btn-vax btn-del" onclick="toggleVax('${v.id}', false)">🗑️</button>`}
-        </div>`;
-      return card;
-    }
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="password" placeholder="Senha">
+        <button id="btn-auth" class="btn-main">Entrar</button>
+    </div>
 
-    window.render = function() {
-      const list = document.getElementById('vax-list'); list.innerHTML = '';
-      const allVax = [...vaccineDB, ...state.manual];
-      
-      const taken = allVax.filter(v => state.taken[v.id]);
-      const pending = allVax.filter(v => !state.taken[v.id]);
+    <div id="app">
+        <header>
+            <h1>Vacinas do Gabriel</h1>
+            <p id="user-display" style="font-size: 0.8rem; color: var(--muted);"></p>
+            <button onclick="signOutApp()" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight: bold;">Sair</button>
+        </header>
+        <div id="vax-list"></div>
+        <button class="floating-add" id="btn-open-modal">+</button>
+    </div>
 
-      // Histórico (Feitas)
-      const grouped = {};
-      taken.forEach(v => {
-        const d = state.taken[v.id].date;
-        if(!grouped[d]) grouped[d] = [];
-        grouped[d].push(v);
-      });
+    <div class="modal" id="modal-manual">
+        <div class="modal-content">
+            <h3 style="margin-bottom:15px">Nova Vacina</h3>
+            <input type="text" id="man-name" placeholder="Nome da Vacina">
+            <input type="text" id="man-dose" placeholder="Dose (ex: Única)">
+            <input type="date" id="man-date">
+            <select id="man-sec">
+                <option value="Manual">Outras</option>
+                <option value="Ao Nascer">Ao Nascer</option>
+                <option value="2 Meses">2 Meses</option>
+                <option value="12 Meses (1 ano)">12 Meses (1 ano)</option>
+            </select>
+            <button class="btn-main" id="btn-save-manual">Salvar</button>
+            <button onclick="closeModal('modal-manual')" style="width:100%; background:none; border:none; margin-top:15px; color:var(--muted);">Cancelar</button>
+        </div>
+    </div>
 
-      const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b.split('/').reverse().join('-')) - new Date(a.split('/').reverse().join('-')));
-      
-      if(sortedDates.length > 0) {
-        sortedDates.forEach(date => {
-          const dateDiv = document.createElement('div');
-          dateDiv.innerHTML = `<div class="history-title">📅 Dia ${date}</div>`;
-          grouped[date].forEach(v => dateDiv.appendChild(createCard(v, true)));
-          list.appendChild(dateDiv);
+    <div class="modal" id="modal-confirm-password">
+        <div class="modal-content">
+            <h3>Apagar Registro</h3>
+            <p style="margin: 10px 0; color: var(--muted);">Digite a senha mestra:</p>
+            <input type="password" id="confirm-pass-input" placeholder="Senha">
+            <button class="btn-main" style="background: var(--danger);" id="btn-confirm-delete">Apagar</button>
+            <button onclick="closeModal('modal-confirm-password')" style="width:100%; background:none; border:none; margin-top:15px; color:var(--muted);">Cancelar</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAa2LcYIJCoGJ4AJmdA8VeGY6Ad9MQePAw",
+            authDomain: "carteira-vacina-7ffd1.firebaseapp.com",
+            projectId: "carteira-vacina-7ffd1",
+            storageBucket: "carteira-vacina-7ffd1.firebasestorage.app",
+            messagingSenderId: "96202787745",
+            appId: "1:96202787745:web:67fdabcfc525b0d1ac99e0"
+        };
+
+        const firebaseApp = initializeApp(firebaseConfig);
+        const auth = getAuth(firebaseApp);
+        const db = getFirestore(firebaseApp);
+
+        let state = { user: null, taken: {}, manual: [] };
+        let isLogin = true;
+        let pendingDeleteId = null;
+        const MASTER_PASS = "370"; 
+
+        const vaccineDB = [
+            { id:'bcg', name:'BCG', dose:'Única', sec:'Ao Nascer' },
+            { id:'hb', name:'Hepatite B', dose:'Dose Nascimento', sec:'Ao Nascer' },
+            { id:'penta1', name:'Pentavalente', dose:'1ª Dose', sec:'2 Meses' },
+            { id:'vip1', name:'Poliomielite (VIP)', dose:'1ª Dose', sec:'2 Meses' },
+            { id:'voro1', name:'Rotavírus', dose:'1ª Dose', sec:'2 Meses' },
+            { id:'pcv1', name:'Pneumocócica 15V', dose:'1ª Dose', sec:'2 Meses' },
+            { id:'menC1', name:'Meningocócica C', dose:'1ª Dose', sec:'3 Meses' },
+            { id:'penta2', name:'Pentavalente', dose:'2ª Dose', sec:'4 Meses' },
+            { id:'vip2', name:'Poliomielite (VIP)', dose:'2ª Dose', sec:'4 Meses' },
+            { id:'voro2', name:'Rotavírus', dose:'2ª Dose', sec:'4 Meses' },
+            { id:'pcv2', name:'Pneumocócica 15V', dose:'2ª Dose', sec:'4 Meses' },
+            { id:'menC2', name:'Meningocócica C', dose:'2ª Dose', sec:'5 Meses' },
+            { id:'penta3', name:'Pentavalente', dose:'3ª Dose', sec:'6 Meses' },
+            { id:'vip3', name:'Poliomielite (VIP)', dose:'3ª Dose', sec:'6 Meses' },
+            { id:'gripe1', name:'Gripe (Influenza)', dose:'Dose Anual', sec:'7 Meses' },
+            { id:'febre1', name:'Febre Amarela', dose:'1ª Dose', sec:'9 Meses' },
+            { id:'pcvRef', name:'Pneumocócica 15V', dose:'Reforço', sec:'12 Meses (1 ano)' },
+            { id:'menCRef', name:'Meningocócica C', dose:'Reforço', sec:'12 Meses (1 ano)' },
+            { id:'scr1', name:'Tríplice Viral', dose:'1ª Dose', sec:'12 Meses (1 ano)' },
+            { id:'dtp1', name:'DTP', dose:'1º Reforço', sec:'15 Meses' },
+            { id:'vopRef', name:'Poliomielite (VOP)', dose:'1º Reforço', sec:'15 Meses' },
+            { id:'hepa', name:'Hepatite A', dose:'Dose Única', sec:'15 Meses' },
+            { id:'tetra', name:'Tetra Viral', dose:'Dose Única', sec:'15 Meses' },
+            { id:'dtp2', name:'DTP', dose:'2º Reforço', sec:'4 Anos' },
+            { id:'vopRef2', name:'Poliomielite (VOP)', dose:'2º Reforço', sec:'4 Anos' },
+            { id:'varicela', name:'Varicela', dose:'2ª Dose', sec:'4 Anos' },
+            { id:'febreRef', name:'Febre Amarela', dose:'Reforço', sec:'7 Anos' },
+            { id:'hpv', name:'HPV Quadrivalente', dose:'Dose Única', sec:'9 a 14 Anos' },
+            { id:'menACWY', name:'Meningocócica ACWY', dose:'Dose Única', sec:'9 a 14 Anos' }
+        ];
+
+        const sectionsOrder = ['Ao Nascer', '2 Meses', '3 Meses', '4 Meses', '5 Meses', '6 Meses', '7 Meses', '9 Meses', '12 Meses (1 ano)', '15 Meses', '4 Anos', '7 Anos', '9 a 14 Anos', 'Manual'];
+
+        function showToast(m) { 
+            const t = document.getElementById('toast'); t.innerText = m; t.style.display='block'; 
+            setTimeout(()=>t.style.display='none', 3000); 
+        }
+
+        async function sync() { 
+            if(state.user) await setDoc(doc(db, "users", state.user.uid), { taken: state.taken, manual: state.manual });
+        }
+
+        window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+
+        function createCard(v, isTaken) {
+            const card = document.createElement('div');
+            card.className = `vax-card ${isTaken ? 'is-taken' : ''}`;
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div><span class="vax-name">${v.name}</span><span class="vax-meta">${v.dose}</span></div>
+                    ${isTaken ? `<span class="badge-feito">FEITO</span>` : ''}
+                </div>
+                <div class="actions">
+                    ${!isTaken ? `<button class="btn-vax btn-now" onclick="toggleVax('${v.id}', true)">Marcar</button>` : `<button class="btn-vax btn-del" onclick="toggleVax('${v.id}', false)">🗑️</button>`}
+                </div>`;
+            return card;
+        }
+
+        window.render = function() {
+            const list = document.getElementById('vax-list'); list.innerHTML = '';
+            const allVax = [...vaccineDB, ...state.manual];
+            const taken = allVax.filter(v => state.taken[v.id]);
+            const pending = allVax.filter(v => !state.taken[v.id]);
+
+            const grouped = {};
+            taken.forEach(v => {
+                const d = state.taken[v.id].date;
+                if(!grouped[d]) grouped[d] = [];
+                grouped[d].push(v);
+            });
+
+            Object.keys(grouped).sort((a,b) => new Date(b.split('/').reverse().join('-')) - new Date(a.split('/').reverse().join('-'))).forEach(date => {
+                const div = document.createElement('div');
+                div.innerHTML = `<div class="history-title">📅 Dia ${date}</div>`;
+                grouped[date].forEach(v => div.appendChild(createCard(v, true)));
+                list.appendChild(div);
+            });
+
+            sectionsOrder.forEach(s => {
+                const vaxInSec = pending.filter(v => v.sec === s);
+                if(vaxInSec.length > 0) {
+                    const div = document.createElement('div');
+                    div.innerHTML = `<div class="section-title">${s}</div>`;
+                    vaxInSec.forEach(v => div.appendChild(createCard(v, false)));
+                    list.appendChild(div);
+                }
+            });
+        };
+
+        window.toggleVax = async (id, status) => {
+            if(status) {
+                const userDate = prompt("Data da Vacina:", new Date().toLocaleDateString('pt-BR'));
+                if(userDate) { state.taken[id] = { date: userDate }; await sync(); render(); showToast("Salvo!"); }
+            } else {
+                pendingDeleteId = id; document.getElementById('confirm-pass-input').value = '';
+                document.getElementById('modal-confirm-password').classList.add('active');
+            }
+        };
+
+        document.getElementById('btn-confirm-delete').onclick = async () => {
+            if(document.getElementById('confirm-pass-input').value === MASTER_PASS) {
+                delete state.taken[pendingDeleteId];
+                state.manual = state.manual.filter(m => m.id !== pendingDeleteId);
+                await sync(); render(); closeModal('modal-confirm-password'); showToast("Removido.");
+            } else { showToast("Senha Incorreta!"); }
+        };
+
+        document.getElementById('btn-save-manual').onclick = async () => {
+            const name = document.getElementById('man-name').value;
+            const rawDate = document.getElementById('man-date').value;
+            if(!name || !rawDate) return showToast("Preencha nome e data!");
+            const [y, m, d] = rawDate.split('-');
+            const id = 'man_' + Date.now();
+            state.manual.push({ id, name, dose: document.getElementById('man-dose').value || 'Dose Única', sec: document.getElementById('man-sec').value });
+            state.taken[id] = { date: `${d}/${m}/${y}` };
+            await sync(); render(); closeModal('modal-manual');
+        };
+
+        document.getElementById('tab-login').onclick = () => { isLogin=true; updateAuthUI(); };
+        document.getElementById('tab-signup').onclick = () => { isLogin=false; updateAuthUI(); };
+        function updateAuthUI() { 
+            document.getElementById('tab-login').classList.toggle('active', isLogin);
+            document.getElementById('tab-signup').classList.toggle('active', !isLogin);
+            document.getElementById('btn-auth').innerText = isLogin ? 'Entrar' : 'Cadastrar';
+        }
+
+        document.getElementById('btn-auth').onclick = async () => {
+            const e = document.getElementById('email').value, p = document.getElementById('password').value;
+            try { isLogin ? await signInWithEmailAndPassword(auth, e, p) : await createUserWithEmailAndPassword(auth, e, p); } 
+            catch { showToast("Erro na autenticação."); }
+        };
+        
+        window.signOutApp = () => signOut(auth);
+        document.getElementById('btn-open-modal').onclick = () => { document.getElementById('man-date').valueAsDate = new Date(); document.getElementById('modal-manual').classList.add('active'); };
+
+        onAuthStateChanged(auth, async (user) => {
+            if(user) {
+                state.user = user; document.getElementById('auth-container').style.display = 'none'; document.getElementById('app').style.display = 'block';
+                document.getElementById('user-display').innerText = user.email;
+                const snap = await getDoc(doc(db, "users", user.uid));
+                if(snap.exists()) { state.taken = snap.data().taken || {}; state.manual = snap.data().manual || []; }
+                render();
+            } else { document.getElementById('auth-container').style.display = 'block'; document.getElementById('app').style.display = 'none'; }
         });
-      }
-
-      // Pendentes por Seção
-      const sections = ['Nascimento', 'Infantil (até 15 meses)', 'Reforços (4-6 anos)', 'Manual'];
-      sections.forEach(s => {
-        const vaxInSec = pending.filter(v => v.sec === s);
-        if(vaxInSec.length > 0) {
-          const div = document.createElement('div');
-          div.innerHTML = `<div class="section-title">${s}</div>`;
-          vaxInSec.forEach(v => div.appendChild(createCard(v, false)));
-          list.appendChild(div);
-        }
-      });
-    }
-
-    window.toggleVax = async (id, status) => {
-      if(status) {
-        const userDate = prompt("Data da Vacina (DD/MM/AAAA):", new Date().toLocaleDateString('pt-BR'));
-        if(userDate) { 
-          state.taken[id] = { date: userDate }; 
-          await sync(); render(); showToast("Salvo!"); 
-        }
-      } else {
-        pendingDeleteId = id; 
-        document.getElementById('confirm-pass-input').value = '';
-        document.getElementById('modal-confirm-password').classList.add('active');
-      }
-    };
-
-    document.getElementById('btn-confirm-delete').onclick = async () => {
-      if(document.getElementById('confirm-pass-input').value === MASTER_PASS) {
-        delete state.taken[pendingDeleteId];
-        state.manual = state.manual.filter(m => m.id !== pendingDeleteId);
-        await sync(); render(); closeModal('modal-confirm-password'); showToast("Removido.");
-      } else { 
-        showToast("Senha Mestra Incorreta!"); 
-      }
-    };
-
-    document.getElementById('btn-save-manual').onclick = async () => {
-      const name = document.getElementById('man-name').value;
-      const rawDate = document.getElementById('man-date').value;
-      if(!name || !rawDate) return showToast("Preencha nome e data!");
-      
-      const [y, m, d] = rawDate.split('-');
-      const formatted = `${d}/${m}/${y}`;
-      const id = 'man_' + Date.now();
-      
-      state.manual.push({ 
-        id, name, 
-        dose: document.getElementById('man-dose').value || 'Dose Única', 
-        sec: document.getElementById('man-sec').value 
-      });
-      state.taken[id] = { date: formatted };
-      
-      await sync(); render(); closeModal('modal-manual');
-      document.getElementById('man-name').value = '';
-    };
-
-    // Auth Logic
-    document.getElementById('tab-login').onclick = () => { isLogin=true; updateAuthUI(); };
-    document.getElementById('tab-signup').onclick = () => { isLogin=false; updateAuthUI(); };
-
-    function updateAuthUI() { 
-      document.getElementById('tab-login').classList.toggle('active', isLogin);
-      document.getElementById('tab-signup').classList.toggle('active', !isLogin);
-      document.getElementById('btn-auth').innerText = isLogin ? 'Entrar' : 'Cadastrar';
-    }
-
-    document.getElementById('btn-auth').onclick = async () => {
-      const e = document.getElementById('email').value;
-      const p = document.getElementById('password').value;
-      if(!e || !p) return showToast("Preencha tudo!");
-      try { 
-        isLogin ? await signInWithEmailAndPassword(auth, e, p) : await createUserWithEmailAndPassword(auth, e, p); 
-      } catch (err) { 
-        showToast("Erro: Verifique os dados."); 
-      }
-    };
-    
-    window.signOutApp = () => signOut(auth);
-
-    document.getElementById('btn-open-modal').onclick = () => {
-      document.getElementById('man-date').valueAsDate = new Date();
-      document.getElementById('modal-manual').classList.add('active');
-    }
-
-    onAuthStateChanged(auth, async (user) => {
-      if(user) {
-        state.user = user;
-        document.getElementById('auth-container').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        document.getElementById('user-display').innerText = user.email;
-        const snap = await getDoc(doc(db, "users", user.uid));
-        if(snap.exists()) { 
-          state.taken = snap.data().taken || {}; 
-          state.manual = snap.data().manual || []; 
-        }
-        render();
-      } else {
-        document.getElementById('auth-container').style.display = 'block';
-        document.getElementById('app').style.display = 'none';
-      }
-    });
-  </script>
+    </script>
 </body>
 </html>
